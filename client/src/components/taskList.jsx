@@ -37,33 +37,39 @@ function TaskList() {
     }
   };
 
-const handleStatusClick = (taskId) => {
+  const handleStatusClick = (taskId) => {
     updateTaskStatus(taskId);
   };
 
-
   return (
     <>
-      <Heading as='h2' size='xl'>
+      <Heading as="h2" size="xl">
         Project Name
       </Heading>
-      <Heading as='h4' size='md'>
+      <Heading as="h4" size="md">
         Project Description
       </Heading>
-      <Heading as='h2' size='xl' my="5px">
+      <Heading as="h2" size="xl" my="5px">
         Members
       </Heading>
-      <Text pt='2' fontSize='sm'>
+      <Text pt="2" fontSize="sm">
         <ul>
           <li>Group Member 1</li>
           <li>Group Member 2</li>
           <li>Group Member 3</li>
         </ul>
       </Text>
-      <Heading as='h2' size='xl' my="5px">
+      <Heading as="h2" size="xl" my="5px">
         Tasks
       </Heading>
-      <VStack spacing={8} w="100%" bgColor="gray.100" px="6" py="6" className="task-list">
+      <VStack
+        spacing={8}
+        w="100%"
+        bgColor="gray.100"
+        px="6"
+        py="6"
+        className="task-list"
+      >
         {tasks.map((task) => (
           <Flex
             key={task.id}

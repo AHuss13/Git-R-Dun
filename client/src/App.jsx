@@ -1,7 +1,7 @@
-import * as React from 'react'
-import TaskList from './components/taskList';
-import { TaskProvider } from './context/TaskContext';
-import Homepage from'./components/Homepage';
+import * as React from "react";
+import TaskList from "./components/taskList";
+import { TaskProvider } from "./context/TaskContext";
+import Homepage from "./components/Homepage";
 
 // 1. import `ChakraProvider` component
 import { ChakraProvider, Heading } from "@chakra-ui/react";

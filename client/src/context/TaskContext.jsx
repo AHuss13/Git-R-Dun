@@ -50,7 +50,7 @@ export const TaskProvider = ({ children }) => {
   const updateTaskStatus = (taskId) => {
     const updatedTasks = tasks.map((task) => {
       if (task.id === taskId) {
-        const statusOrder = ['Not Started', 'In Progress', 'Done'];
+        const statusOrder = ["Not Started", "In Progress", "Done"];
         const currentIndex = statusOrder.indexOf(task.status);
         const newIndex = (currentIndex + 1) % statusOrder.length;
         return { ...task, status: statusOrder[newIndex] };
@@ -61,7 +61,9 @@ export const TaskProvider = ({ children }) => {
   };
 
   return (
-    <TaskContext.Provider value={{ tasks, getTasksFromDatabase, addTask, updateTaskStatus }}>
+    <TaskContext.Provider
+      value={{ tasks, getTasksFromDatabase, addTask, updateTaskStatus }}
+    >
       {children}
     </TaskContext.Provider>
   );
