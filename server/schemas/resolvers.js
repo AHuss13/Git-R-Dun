@@ -33,24 +33,24 @@ const resolvers = {
       const user = await User.create({ username, email, password });
       return user;
     },
-    // login was pulled directly from example.
-    // login: async (parent, { email, password }) => {
-    //   const user = await User.findOne({ email });
 
-    //   if (!user) {
-    //     throw AuthenticationError;
-    //   }
+    login: async (parent, { email, password }) => {
+      const user = await User.findOne({ email });
 
-    //   const correctPw = await user.isCorrectPassword(password);
+      if (!user) {
+        throw AuthenticationError;
+      }
 
-    //   if (!correctPw) {
-    //     throw AuthenticationError;
-    //   }
+      const correctPw = await user.isCorrectPassword(password);
 
-    //   const token = signToken(user);
+      if (!correctPw) {
+        throw AuthenticationError;
+      }
 
-    //   return { token, user };
-    // },
+      const token = signToken(user);
+
+      return { token, user };
+    },
 
     addProject: async (parent, { name, description, owner, members }) => {
       const project = await Project.create({

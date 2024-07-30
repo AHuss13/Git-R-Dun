@@ -38,6 +38,7 @@ const typeDefs = `
     addProject(name: String!, description: String!, owner: ID!, members: [ID]): Project
     removeProject(projectId: ID!): Project
     addTask(name: String!, projectId: ID!, owner: ID!, status: String): Task
+    login(email: String!, password: String!): Auth
   } 
   `;
 
