@@ -3,9 +3,9 @@ import App from "./App";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import TaskList from "./components/taskList";
 import Members from "./components/Members";
-import Homepage from "./components/Homepage";
-import Userpage from "./components/Userpage";
-import ErrorPage from "./components/ErrorPage";
+import Homepage from "./pages/Homepage";
+import Userpage from "./pages/Userpage";
+import ErrorPage from "./pages/ErrorPage";
 
 const router = createBrowserRouter([
   {
