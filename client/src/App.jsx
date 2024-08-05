@@ -1,7 +1,4 @@
 import * as React from "react";
-import TaskList from "./components/taskList";
-import { TaskProvider } from "./context/TaskContext";
-import Homepage from "./components/Homepage";
 
 // 1. import `ChakraProvider` component
 import { ChakraProvider, Heading } from "@chakra-ui/react";
@@ -31,12 +28,10 @@ function App() {
   return (
     <ChakraProvider>
       <ApolloProvider client={client}>
-        <TaskProvider>
           <Heading as="h1" size="2xl" my="5px">
             Git-R-Dun
           </Heading>
           <Outlet />
-        </TaskProvider>
       </ApolloProvider>
     </ChakraProvider>
   );
