@@ -8,6 +8,11 @@ const typeDefs = `
     projects: [Project]
   }
 
+  type Auth {
+    token: ID
+    user: User
+  }
+
   type Project {
     _id: ID!
     name: String!
