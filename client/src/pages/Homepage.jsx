@@ -1,6 +1,5 @@
-import react, { useContext, useState } from "react";
 import { Heading, Stack, Input } from "@chakra-ui/react";
-import { Button, ButtonGroup } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
 function Homepage() {
@@ -13,7 +12,7 @@ function Homepage() {
         <Input placeholder="Username" size="sm" />
         <Input placeholder="Password" size="sm" />
       </Stack>
-      <Link to={"/userpage"}>
+      <Link to={"/login"}>
         <Button colorScheme="purple" my="5px">
           Login
         </Button>
