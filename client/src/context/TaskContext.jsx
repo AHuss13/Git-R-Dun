@@ -2,8 +2,6 @@ import React, { createContext, useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { QUERY_PROJECTS } from "../utils/queries";
 
-// Create the context
-export const TaskContext = createContext();
 
 // Create the provider component
 export const TaskProvider = ({ children }) => {
@@ -68,3 +66,6 @@ export const TaskProvider = ({ children }) => {
     </TaskContext.Provider>
   );
 };
+
+// Create the context
+export const TaskContext = createContext();
