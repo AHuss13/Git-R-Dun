@@ -25,7 +25,7 @@ function Homepage() {
         <Input placeholder="Email" size="sm" />
         <Input placeholder="Password" size="sm" />
       </Stack>
-      <Link to={"/userpage"}>
+      <Link to={"/signup"}>
         <Button colorScheme="purple" my="5px">
           Register
         </Button>
