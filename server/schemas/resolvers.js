@@ -1,4 +1,5 @@
 const { User, Project, Task } = require("../models");
+const { signToken, AuthenticationError } = require("../utils/auth");
 
 const resolvers = {
   Query: {
@@ -31,6 +32,7 @@ const resolvers = {
   Mutation: {
     addUser: async (parent, { username, email, password }) => {
       const user = await User.create({ username, email, password });
+      const token = signToken(user);
       return user;
     },
 
@@ -46,8 +48,6 @@ const resolvers = {
       if (!correctPw) {
         throw AuthenticationError;
       }
-
-      const token = signToken(user);
 
       return { token, user };
     },
@@ -85,19 +85,19 @@ const resolvers = {
     // },
 
     removeProject: async (parent, { projectId }, context) => {
-      // if (context.user)
+      if (context.user)
       {
         const project = await Project.findOneAndDelete({
           _id: projectId,
         });
 
-        // await User.findOneAndUpdate(
-        //   { _id: context.user._id },
-        //   { $pull: { Projects: Project._id } }
-        // );
+        await User.findOneAndUpdate(
+          { _id: context.user._id },
+          { $pull: { Projects: Project._id } }
+        );
         return project;
       }
-      // throw AuthenticationError;
+      throw AuthenticationError;
     },
   },
 };
