@@ -1,22 +1,20 @@
-const express = require("express");
-const path = require("path");
+import express from "express";
+import path from "path";
 // Import the ApolloServer class
-const { ApolloServer } = require("@apollo/server");
-const { expressMiddleware } = require("@apollo/server/express4");
-const { authMiddleware } = require("./utils/auth");
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
+import { authMiddleware } from "./utils/auth";
 
 // Import the two parts of a GraphQL schema
-const { typeDefs, resolvers } = require("./schemas");
-const db = require("./config/connection");
+import { typeDefs, resolvers } from "./schemas/index.js";
+import db from './config/connection.js';
 
 const PORT = process.env.PORT || 3001;
-
+const app = express();
 const server = new ApolloServer({
   typeDefs,
   resolvers,
 });
-
-const app = express();
 
 // Create a new instance of an Apollo server with the GraphQL schema
 const startApolloServer = async () => {
@@ -35,16 +33,16 @@ const startApolloServer = async () => {
   if (process.env.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, "../client/dist")));
 
-    app.get("*", (req, res) => {
+    app.get("*", (_, res) => {
       res.sendFile(path.join(__dirname, "../client/dist/index.html"));
     });
   }
 
-  db.once("open", () => {
-    app.listen(PORT, () => {
-      console.log(`API server running on port ${PORT}!`);
-      console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
-    });
+  db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+  app.listen(PORT, () => {
+    console.log(`API server running on port ${PORT}!`);
+    console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
   });
 };
 

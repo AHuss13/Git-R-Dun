@@ -33,7 +33,7 @@ const resolvers = {
     addUser: async (parent, { username, email, password }) => {
       const user = await User.create({ username, email, password });
       const token = signToken(user);
-      return user;
+      return {token, user};
     },
 
     login: async (parent, { email, password }) => {
@@ -48,6 +48,7 @@ const resolvers = {
       if (!correctPw) {
         throw AuthenticationError;
       }
+      const token = signToken(user);
 
       return { token, user };
     },
@@ -85,8 +86,7 @@ const resolvers = {
     // },
 
     removeProject: async (parent, { projectId }, context) => {
-      if (context.user)
-      {
+      if (context.user) {
         const project = await Project.findOneAndDelete({
           _id: projectId,
         });

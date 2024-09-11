@@ -4,9 +4,11 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "watch": "nodemon",
-    "seed": "node seeders/seed.js"
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "watch": "nodemon dist/server.js",
+    "seed": "node dist/seeders/seed.js",
+    "dev": "pnpm concurrently \"pnpm nodemon\" \"tsc --watch --preserveWatchOutput\" -n node,ts -c green.bgBlack,white.bgBlue"
   },
   "keywords": [],
   "author": "",
