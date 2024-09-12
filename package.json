@@ -6,10 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server/dist/server.js --ignore client",
-    "develop": "concurrently \"cd server && pnpm run watch\" \"wait-on tcp:3001 && cd client && pnpm run dev\"",
+    "develop": "concurrently \"cd server && npm run watch\" \"wait-on tcp:3001 && cd client && npm run dev\"",
     "install": "cd server && pnpm i && cd ../client && pnpm i",
     "seed": "cd server && pnpm run seed",
-    "build": "cd client && pnpm run build && cd ../server && pnpm run build"
+    "build": "concurrently \"cd server && npm run build\" \"cd client && npm run build\""
   },
   "keywords": [],
   "author": "",
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.6",
+    "concurrently": "^8.2.2",
     "wait-on": "8.0.1"
   }
 }
