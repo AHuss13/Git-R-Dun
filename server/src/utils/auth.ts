@@ -1,14 +1,17 @@
 import { GraphQLError } from "graphql";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 const secret = "mysecretssshhhhhhh";
 const expiration = "2h";
 
-export const AuthenticationError = new GraphQLError("Could not authenticate user.", {
-  extensions: {
-    code: "UNAUTHENTICATED",
-  },
-});
+export const AuthenticationError = new GraphQLError(
+  "Could not authenticate user.",
+  {
+    extensions: {
+      code: "UNAUTHENTICATED",
+    },
+  }
+);
 
 export function authMiddleware({ req }: { req: any }) {
   let token = req.body.token || req.query.token || req.headers.authorization;
@@ -22,7 +25,7 @@ export function authMiddleware({ req }: { req: any }) {
   }
 
   try {
-    const { data } = jwt.verify(token, secret, { maxAge: expiration });
+    const { data } = jwt.verify(token, secret, { maxAge: expiration }) as JwtPayload;
     req.user = data;
   } catch {
     console.log("Invalid token");
@@ -31,7 +34,15 @@ export function authMiddleware({ req }: { req: any }) {
   return req;
 }
 
-export function signToken({ email, username, _id }: { email: any; username: any; _id: any }) {
+export function signToken({
+  email,
+  username,
+  _id,
+}: {
+  email: any;
+  username: any;
+  _id: any;
+}) {
   const payload = { email, username, _id };
   return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
 }

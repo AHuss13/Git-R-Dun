@@ -1,4 +1,4 @@
-const addDateSuffix = (date) => {
+const addDateSuffix = (date: number) => {
   let dateStr = date.toString();
 
   // get last char of date string
@@ -18,10 +18,10 @@ const addDateSuffix = (date) => {
 };
 
 // function to format a timestamp, accepts the timestamp and an `options` object as parameters
-module.exports = (
-  timestamp,
-  { monthLength = "short", dateSuffix = true } = {}
-) => {
+const dateFormat = (
+  timestamp: number,
+  { monthLength = "short", dateSuffix = true }: { monthLength?: string, dateSuffix?: boolean } = {}
+): string => {
   // create month object
   const months = {
     0: monthLength === "short" ? "Jan" : "January",
@@ -39,7 +39,7 @@ module.exports = (
   };
 
   const dateObj = new Date(timestamp);
-  const formattedMonth = months[dateObj.getMonth()];
+  const formattedMonth = months[dateObj.getMonth() as keyof typeof months];
 
   const dayOfMonth = dateSuffix
     ? addDateSuffix(dateObj.getDate())
@@ -65,3 +65,6 @@ module.exports = (
 
   return formattedTimeStamp;
 };
+
+// export function to use in Project model
+export default dateFormat;

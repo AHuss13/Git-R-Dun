@@ -1,20 +1,25 @@
-const db = require("../config/connection");
-const { User, Project } = require("../models");
-const userSeeds = require("./userSeeds.json");
-const cleanDB = require("./cleanDB");
-const projectSeeds = require("./projectSeeds.json");
+import db from "../config/connection";
+import { User, Project } from "../models";
+import userSeeds from "./userSeeds.json";
+import cleanDB from './cleanDB';
+import projectSeeds from "./projectSeeds.json";
+
+interface ProjectSeed {
+  _id: string;
+  owner: string;
+}
 
 db.once("open", async () => {
   try {
     await cleanDB("User", "users");
-    
+
     await cleanDB("Project", "projects");
 
     await User.create(userSeeds);
 
     for (let i = 0; i < projectSeeds.length; i++) {
-      const { _id, owner } = await Project.create(projectSeeds[i]);
-      const user = await User.findOneAndUpdate(
+      const { _id, owner } = await Project.create(projectSeeds[i] as ProjectSeed);
+      await User.findOneAndUpdate(
         { username: owner },
         {
           $addToSet: {
