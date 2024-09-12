@@ -18,7 +18,6 @@ import { Link, useParams } from "react-router-dom";
 import Auth from "../utils/auth";
 import { QUERY_USERS } from "../utils/queries";
 
-
 function Userpage() {
   const { username: userParam } = useParams();
 
@@ -28,7 +27,7 @@ function Userpage() {
 
   const user = data?.user || {};
   // navigate to personal profile page if username is yours
-  if (Auth.loggedIn() ) {
+  if (Auth.loggedIn()) {
     return (
       <>
         <Card>

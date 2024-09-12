@@ -28,10 +28,10 @@ function App() {
   return (
     <ChakraProvider>
       <ApolloProvider client={client}>
-          <Heading as="h1" size="2xl" my="5px">
-            Git-R-Dun
-          </Heading>
-          <Outlet />
+        <Heading as="h1" size="2xl" my="5px">
+          Git-R-Dun
+        </Heading>
+        <Outlet />
       </ApolloProvider>
     </ChakraProvider>
   );
