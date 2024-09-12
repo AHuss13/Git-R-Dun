@@ -1,5 +1,5 @@
-const { User, Project, Task } = require("../models");
-const { signToken, AuthenticationError } = require("../utils/auth");
+import { User, Project, Task } from "../models";
+import { signToken, AuthenticationError } from "../utils/auth";
 
 const resolvers = {
   Query: {
@@ -21,7 +21,7 @@ const resolvers = {
     },
     tasks: async () => {
       try {
-        const tasks = await Tasks.find();
+        const tasks = await Task.find();
         return tasks;
       } catch (error) {
         throw new Error("Failed to fetch tasks");
@@ -30,30 +30,30 @@ const resolvers = {
   },
 
   Mutation: {
-    addUser: async (parent, { username, email, password }) => {
+    addUser: async (_parent: any, { username, email, password }: { username: string, email: string, password: string }) => {
       const user = await User.create({ username, email, password });
       const token = signToken(user);
-      return {token, user};
+      return { token, user };
     },
 
-    login: async (parent, { email, password }) => {
+    login: async (_parent: any, { email, password }: { email: string, password: string }) => {
       const user = await User.findOne({ email });
-
+    
       if (!user) {
         throw AuthenticationError;
       }
-
+    
       const correctPw = await user.isCorrectPassword(password);
-
+    
       if (!correctPw) {
         throw AuthenticationError;
       }
       const token = signToken(user);
-
+    
       return { token, user };
     },
 
-    addProject: async (parent, { name, description, owner, members }) => {
+    addProject: async (_parent: any, { name, description, owner, members }: { name: string, description: string, owner: string, members: string[] }) => {
       const project = await Project.create({
         name,
         description,
@@ -63,7 +63,7 @@ const resolvers = {
       console.log(project);
       return project;
     },
-    addTask: async (parent, { name, status, projectId, owner }) => {
+    addTask: async (_parent: any, { name, status, projectId, owner }: { name: string, status: string, projectId: string, owner: string }) => {
       const task = await Task.create({
         name,
         status,
@@ -85,12 +85,12 @@ const resolvers = {
     //   return project;
     // },
 
-    removeProject: async (parent, { projectId }, context) => {
+    removeProject: async (_parent: any, { projectId }: { projectId: string }, context: any) => {
       if (context.user) {
         const project = await Project.findOneAndDelete({
           _id: projectId,
         });
-
+    
         await User.findOneAndUpdate(
           { _id: context.user._id },
           { $pull: { Projects: Project._id } }
