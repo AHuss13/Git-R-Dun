@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
-import { useMutation } from '@apollo/client';
-import { ADD_USER } from '../utils/mutations';
+import { useMutation } from "@apollo/client";
+import { ADD_USER } from "../utils/mutations";
 
-import Auth from '../utils/auth';
+import Auth from "../utils/auth";
 
 const Signup = () => {
   const [formState, setFormState] = useState({
-    username: '',
-    email: '',
-    password: '',
+    username: "",
+    email: "",
+    password: "",
   });
   const [addUser, { error, data }] = useMutation(ADD_USER);
 
@@ -44,9 +44,9 @@ const Signup = () => {
         <div className="">
           <h4 className="">Sign Up</h4>
           <div className="">
-          {data ? (
+            {data ? (
               <p>
-                Success! You may now head{' '}
+                Success! You may now head{" "}
                 <Link to="/">back to the homepage.</Link>
               </p>
             ) : (
@@ -77,19 +77,15 @@ const Signup = () => {
                 />
                 <button
                   className=""
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: "pointer" }}
                   type="submit"
                 >
                   Submit
                 </button>
               </form>
             )}
-            
-            {error && (
-              <div className="">
-                {error.message}
-              </div>
-            )}
+
+            {error && <div className="">{error.message}</div>}
           </div>
         </div>
       </div>
