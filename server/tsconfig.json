@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "allowJs": true
   },
   "include": ["src"]
