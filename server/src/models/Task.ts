@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+import { Schema, model } from "mongoose";
 
 const taskSchema = new Schema({
   name: {
@@ -21,10 +21,10 @@ const taskSchema = new Schema({
   },
   createdAt: {
     type: Date,
-    deafault: Date.now,
+    default: Date.now,
   },
 });
 
 const Task = model("Task", taskSchema);
 
-module.exports = Task;
+export default Task;

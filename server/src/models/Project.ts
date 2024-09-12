@@ -1,7 +1,7 @@
-const { Schema, model } = require("mongoose");
-const dateFormat = require("../utils/dateFormat");
+import { Schema, model } from "mongoose";
+import dateFormat from "../utils/dateFormat";
 
-const projectSchema = new Schema({
+const projectSchema: Schema = new Schema({
   name: {
     type: String,
     required: "You need to name the project!",
@@ -24,14 +24,16 @@ const projectSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    get: (timestamp) => dateFormat(timestamp),
+    get: function(this: { _id: any }, timestamp: Date) {
+      return dateFormat(timestamp.getTime());
+    },
   },
 });
 
 const Project = model("Project", projectSchema);
 
 projectSchema.virtual("id").get(function () {
-  return this._id.toString();
+  return this._id!.toString();
 });
 
-module.exports = Project;
+export default Project;

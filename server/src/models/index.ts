@@ -1,5 +1,5 @@
-const User = require("./User");
-const Task = require("./Task");
-const Project = require("./Project");
+import User from "./User";
+import Task from "./Task";
+import Project from "./Project";
 
-module.exports = { User, Task, Project };
+export { User, Task, Project };
