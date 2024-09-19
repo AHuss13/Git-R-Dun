@@ -10,7 +10,7 @@
     "seed": "cd server && pnpm run seed",
     "build": "concurrently \"cd server && pnpm run build\" \"cd client && pnpm run build\"",
     "render-build":"pnpm install && pnpm run build",
-    "server": "cd server && tsc -w"
+    "server": "cd server && pnpm run build"
   },
   "keywords": [],
   "author": "",
