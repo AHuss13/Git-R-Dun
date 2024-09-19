@@ -1,5 +1,5 @@
-import User from "./User";
-import Task from "./Task";
-import Project from "./Project";
+import User from "./User.js";
+import Task from "./Task.js";
+import Project from "./Project.js";
 
 export { User, Task, Project };

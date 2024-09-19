@@ -1,14 +1,65 @@
-import { User, Project, Task } from "../models";
-import { signToken, AuthenticationError } from "../utils/auth";
+import { User, Project, Task } from "../models/index.js";
+import { signToken, AuthenticationError } from "../utils/auth.js";
+
+interface AddUserArgs {
+  input: {
+    username: string;
+    email: string;
+    password: string;
+  };
+}
+
+interface LoginUserArgs {
+  email: string;
+  password: string;
+}
+
+interface UserArgs {
+  username: string;
+}
+
+interface AddProjectArgs {
+  input: {
+    name: string;
+    description: string;
+    owner: string;
+    members: string[];
+  };
+}
+
+interface AddTaskArgs {
+  projectId: string;
+  name: string;
+  status: string;
+}
+
+// interface UpdateProjectArgs {
+//   _id: string;
+//   name: string;
+//   description: string;
+//   members: string[];
+// }
+
+interface RemoveProjectArgs {
+  projectId: string;
+  taskID: string;
+}
+
+interface ProjectArgs {
+  projectId: string;
+}
 
 const resolvers = {
   Query: {
     users: async () => {
+      return User.find().populate("projects");
+    },
+    user: async (_parent: any, { username }: UserArgs) => {
       try {
-        const users = await User.find();
-        return users;
+        const user = await User.findOne({ username }).populate("projects");
+        return user;
       } catch (error) {
-        throw new Error("Failed to fetch users");
+        throw new Error("Failed to fetch user");
       }
     },
     projects: async () => {
@@ -17,6 +68,14 @@ const resolvers = {
         return projects;
       } catch (error) {
         throw new Error("Failed to fetch projects");
+      }
+    },
+    project: async (_parent: any, { projectId }: ProjectArgs) => {
+      try {
+        const project = await Project.findOne({ _id: projectId });
+        return project;
+      } catch (error) {
+        throw new Error("Failed to fetch project");
       }
     },
     tasks: async () => {
@@ -30,50 +89,79 @@ const resolvers = {
   },
 
   Mutation: {
-    addUser: async (_parent: any, { username, email, password }: { username: string, email: string, password: string }) => {
-      const user = await User.create({ username, email, password });
-      const token = signToken(user);
-      return { token, user };
+    addUser: async (_parent: any, { input }: AddUserArgs) => {
+      try {
+        const user = await User.create({ ...input });
+        const token = signToken(user.username, user.email, user.password);
+        return { token, user };
+      } catch (error) {
+        throw new Error("Failed to create user");
+      }
     },
 
-    login: async (_parent: any, { email, password }: { email: string, password: string }) => {
+    login: async (_parent: any, { email, password }: LoginUserArgs) => {
       const user = await User.findOne({ email });
-    
       if (!user) {
-        throw AuthenticationError;
+        throw new AuthenticationError("Incorrect credentials");
       }
-    
+
       const correctPw = await user.isCorrectPassword(password);
-    
+
       if (!correctPw) {
-        throw AuthenticationError;
+        throw new AuthenticationError("Incorrect password credentials");
+        // TODO: Remove "password" from the error message after working
       }
-      const token = signToken(user);
-    
+      const token = signToken(user.username, user.email, user._id);
+
       return { token, user };
     },
 
-    addProject: async (_parent: any, { name, description, owner, members }: { name: string, description: string, owner: string, members: string[] }) => {
-      const project = await Project.create({
-        name,
-        description,
-        owner,
-        members,
-      });
-      console.log(project);
-      return project;
+    addProject: async (
+      _parent: any,
+      { input }: AddProjectArgs,
+      context: any
+    ) => {
+      if (context.user) {
+        // Find the user by the owner's username
+        const owner = await User.findOne({ username: input.owner });
+    
+        if (!owner) {
+          throw new Error('Owner not found');
+        }
+        const project = await Project.create({ ...input, owner: context.user._id });
+
+        await User.findOneAndUpdate(
+          { _id: context.user._id },
+          { $push: { projects: project._id } }
+        );
+
+        return project;
+      }
+      throw new AuthenticationError("You need to be logged in!");
     },
-    addTask: async (_parent: any, { name, status, projectId, owner }: { name: string, status: string, projectId: string, owner: string }) => {
-      const task = await Task.create({
-        name,
-        status,
-        projectId,
-        owner,
-      });
-      console.log(task);
-      return task;
+
+    addTask: async (
+      _parent: any,
+      { projectId, name, status }: AddTaskArgs,
+      context: any
+    ) => {
+      if (context.user) {
+        return Project.findOneAndUpdate(
+          { _id: projectId },
+          {
+            $addToSet: {
+              task: { name, status },
+            },
+          },
+          {
+            new: true,
+            runValidators: true,
+          }
+        );
+      }
+      throw new AuthenticationError("Failed to add Task"!);
     },
-    // Copied currently
+
     // updateProject: async (parent, { id, name, description, members }) => {
     //   const project = await Project.findOneAndUpdate({
     //     id,
@@ -85,21 +173,20 @@ const resolvers = {
     //   return project;
     // },
 
-    removeProject: async (_parent: any, { projectId }: { projectId: string }, context: any) => {
+    removeProject: async (
+      _parent: any,
+      { projectId, taskID }: RemoveProjectArgs,
+      context: any
+    ) => {
       if (context.user) {
-        const project = await Project.findOneAndDelete({
-          _id: projectId,
-        });
-    
-        await User.findOneAndUpdate(
-          { _id: context.user._id },
-          { $pull: { Projects: Project._id } }
+        return Project.findOneAndDelete(
+          {_id: projectId},
+          {task: { _id: taskID }}
         );
-        return project;
       }
       throw AuthenticationError;
     },
   },
 };
 
-module.exports = resolvers;
+export default resolvers;

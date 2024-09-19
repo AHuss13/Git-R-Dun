@@ -1,39 +1,38 @@
-import { Schema, model } from "mongoose";
-import dateFormat from "../utils/dateFormat";
+import mongoose, { Schema, model, Document} from "mongoose";
+import { ITask, taskSchema} from "./Task.js";
+import { IUser, userSchema } from "./User.js";
 
-const projectSchema: Schema = new Schema({
+interface IProject extends Document {
+  name: string;
+  description: string;
+  owner: mongoose.Types.ObjectId;
+  members: IUser[];
+  createdAt: Date;
+  tasks: ITask[];
+}
+
+const projectSchema = new Schema<IProject>({
   name: {
     type: String,
-    required: "You need to name the project!",
+    required: true,
   },
   description: {
     type: String,
     required: true,
   },
   owner: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
+    required: true
   },
-  members: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
+  members: [userSchema],
   createdAt: {
     type: Date,
     default: Date.now,
-    get: function(this: { _id: any }, timestamp: Date) {
-      return dateFormat(timestamp.getTime());
-    },
   },
+  tasks: [taskSchema],
 });
 
-const Project = model("Project", projectSchema);
-
-projectSchema.virtual("id").get(function () {
-  return this._id!.toString();
-});
+const Project = model<IProject>("Project", projectSchema);
 
 export default Project;

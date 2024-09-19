@@ -6,6 +6,7 @@ interface IUser extends Document {
   email: string;
   password: string;
   projects: Schema.Types.ObjectId[];
+  isCorrectPassword: (password: string) => Promise<boolean>;
 }
 
 const userSchema = new Schema<IUser>({
@@ -19,7 +20,7 @@ const userSchema = new Schema<IUser>({
     type: String,
     required: true,
     unique: true,
-    //match: [/.+@.+\..+/, 'Must match an email address!'],
+    match: [/.+@.+\..+/, 'Must match an email address!'],
   },
   password: {
     type: String,
@@ -44,12 +45,12 @@ userSchema.pre("save", async function (this: IUser, next) {
 });
 
 userSchema.methods.isCorrectPassword = async function (
-  this: IUser,
   password: string
-) {
+): Promise<boolean> {
   return bcrypt.compare(password, this.password);
 };
 
 const User = model<IUser>("User", userSchema);
 
 export default User;
+export { IUser, userSchema };
