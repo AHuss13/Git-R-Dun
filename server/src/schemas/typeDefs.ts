@@ -6,7 +6,7 @@ const typeDefs = gql`
     username: String
     email: String
     password: String
-    projects: [Project]
+    projects: [Project]!
   }
 
   input UserInput {
@@ -28,6 +28,13 @@ const typeDefs = gql`
     members: [User]
     createdAt: String!
     tasks: [Task]
+  }
+
+  input ProjectInput {
+    name: String!
+    description: String
+    owner: ID!
+    members: [ID]
   }
 
   type Task {
