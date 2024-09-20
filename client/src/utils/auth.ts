@@ -1,49 +1,62 @@
-// use this to decode a token and get the user's information out of it
-import decode from "jwt-decode";
+import { type JwtPayload, jwtDecode } from 'jwt-decode';
 
-// create a new class to instantiate for a user
-class Auth {
-  // get user data
+// Extending the JwtPayload interface to include additional data fields specific to the application.
+interface ExtendedJwt extends JwtPayload {
+  data:{
+    username:string,
+    email:string,
+    id:string
+  }
+};
+
+class AuthService {
+  // This method decodes the JWT token to get the user's profile information.
   getProfile() {
-    return decode(this.getToken());
+    // jwtDecode is used to decode the JWT token and return its payload.
+    return jwtDecode<ExtendedJwt>(this.getToken());
   }
 
-  // check if user's logged in
+  // This method checks if the user is logged in by verifying the presence and validity of the token.
   loggedIn() {
-    // Checks if there is a saved token and it's still valid
     const token = this.getToken();
-    return !!token && !this.isTokenExpired(token); // handwaving here
+    // Returns true if the token exists and is not expired.
+    return !!token && !this.isTokenExpired(token);
   }
 
-  // check if token is expired
-  isTokenExpired(token) {
+  // This method checks if the provided token is expired.
+  isTokenExpired(token: string) {
     try {
-      const decoded = decode(token);
-      if (decoded.exp < Date.now() / 1000) {
+      // jwtDecode decodes the token to check its expiration date.
+      const decoded = jwtDecode<JwtPayload>(token);
+
+      // Returns true if the token has expired, false otherwise.
+      if (decoded?.exp && decoded?.exp < Date.now() / 1000) {
         return true;
-      } else return false;
+      }
     } catch (err) {
+      // If decoding fails, assume the token is not expired.
       return false;
     }
   }
 
-  getToken() {
-    // Retrieves the user token from localStorage
-    return localStorage.getItem("id_token");
+  // This method retrieves the token from localStorage.
+  getToken(): string {
+    const loggedUser = localStorage.getItem('id_token') || '';
+    // Returns the token stored in localStorage.
+    return loggedUser;
   }
 
-  login(idToken) {
-    // Saves user token to localStorage
-    localStorage.setItem("id_token", idToken);
-    window.location.assign("/");
+  // This method logs in the user by storing the token in localStorage and redirecting to the home page.
+  login(idToken: string) {
+    localStorage.setItem('id_token', idToken);
+    window.location.assign('/');
   }
 
+  // This method logs out the user by removing the token from localStorage and redirecting to the home page.
   logout() {
-    // Clear user token and profile data from localStorage
-    localStorage.removeItem("id_token");
-    // this will reload the page and reset the state of the application
-    window.location.assign("/");
+    localStorage.removeItem('id_token');
+    window.location.assign('/');
   }
 }
 
-export default new Auth();
+export default new AuthService();
