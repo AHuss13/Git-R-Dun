@@ -32,7 +32,7 @@ const typeDefs = gql`
 
   input ProjectInput {
     name: String!
-    description: String
+    description: String!
     owner: ID!
     members: [ID]
   }
