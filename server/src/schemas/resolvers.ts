@@ -92,7 +92,7 @@ const resolvers = {
     addUser: async (_parent: any, { input }: AddUserArgs) => {
       try {
         const user = await User.create({ ...input });
-        const token = signToken(user.username, user.email, user.password);
+        const token = signToken(user.username, user.email, user._id);
         return { token, user };
       } catch (error) {
         throw new Error("Failed to create user");
