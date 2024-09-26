@@ -1,13 +1,13 @@
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import TaskList from "./components/taskList.js";
-import Members from "./components/Members.js";
-import Homepage from "./pages/Homepage.js";
-import Userpage from "./pages/Userpage.js";
-import ErrorPage from "./pages/ErrorPage.js";
-import Login from "./pages/Login.js";
-import SignUp from "./pages/SignUp.js";
+// import TaskList from "./components/taskList";
+// import Members from "./components/Members";
+import Homepage from "./pages/Homepage";
+import Userpage from "./pages/Userpage";
+import ErrorPage from "./pages/ErrorPage";
+import Login from "./pages/Login";
+import SignUp from "./pages/SignUp";
 
 const router = createBrowserRouter([
   {
@@ -27,14 +27,14 @@ const router = createBrowserRouter([
         path: "/signup",
         element: <SignUp />,
       },
-      {
-        path: "/projectpage",
-        element: <TaskList />,
-      },
-      {
-        path: "/members",
-        element: <Members />,
-      },
+      // {
+      //   path: "/projectpage",
+      //   element: <Projects />,
+      // },
+      // {
+      //   path: "/members",
+      //   element: <Members />,
+      // },
       {
         path: "/userpage",
         element: <Userpage />,
