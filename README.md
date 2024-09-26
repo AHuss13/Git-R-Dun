@@ -13,5 +13,3 @@ MERN
 Contributors:
 Trey Shearin
 Adam Huss
-Kyle Schoenberger
-Joselyn Nuno
