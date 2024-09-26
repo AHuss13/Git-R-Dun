@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent, type ChangeEvent } from "react";
 import { Link } from "react-router-dom";
 
 import { useMutation } from "@apollo/client";
@@ -14,7 +14,7 @@ const Signup = () => {
   });
   const [addUser, { error, data }] = useMutation(ADD_USER);
 
-  const handleChange = (event) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
     setFormState({
@@ -23,27 +23,27 @@ const Signup = () => {
     });
   };
 
-  const handleFormSubmit = async (event) => {
+  const handleFormSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    console.log(formState);
 
     try {
       const { data } = await addUser({
-        variables: { ...formState },
+        variables: { input: { ...formState } },
       });
 
       Auth.login(data.addUser.token);
     } catch (e) {
       console.error(e);
+      console.log(formState);
     }
   };
 
   return (
-    <main className="">
-      <div className="">
-        <div className="">
-          <h4 className="">Sign Up</h4>
-          <div className="">
+    <main className="flex-row justify-center mb-4">
+      <div className="col-lg-6">
+        <div className="card">
+          <h4 className="card-header bg-dark text-light p-2">Sign Up</h4>
+          <div className="card-body">
             {data ? (
               <p>
                 Success! You may now head{" "}
@@ -56,7 +56,7 @@ const Signup = () => {
                   placeholder="Your username"
                   name="username"
                   type="text"
-                  value={formState.name}
+                  value={formState.username}
                   onChange={handleChange}
                 />
                 <input
@@ -76,7 +76,7 @@ const Signup = () => {
                   onChange={handleChange}
                 />
                 <button
-                  className=""
+                  className="btn btn-block btn-primary"
                   style={{ cursor: "pointer" }}
                   type="submit"
                 >
@@ -85,7 +85,11 @@ const Signup = () => {
               </form>
             )}
 
-            {error && <div className="">{error.message}</div>}
+            {error && (
+              <div className="my-3 p-3 bg-danger text-white">
+                {error.message}
+              </div>
+            )}
           </div>
         </div>
       </div>
