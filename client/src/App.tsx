@@ -1,5 +1,5 @@
 // 1. import `ChakraProvider` component
-import { ChakraProvider, Heading } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
 import {
   ApolloClient,
   InMemoryCache,
@@ -44,9 +44,6 @@ function App() {
   return (
     <ChakraProvider>
       <ApolloProvider client={client}>
-        <Heading as="h1" size="2xl" my="5px">
-          Git-R-Dun
-        </Heading>
         <Outlet />
       </ApolloProvider>
     </ChakraProvider>
