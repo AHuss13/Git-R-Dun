@@ -1,5 +1,7 @@
 import { useState, type FormEvent, type ChangeEvent } from "react";
 import { Link } from "react-router-dom";
+import { Header } from "../components/Header";
+import { Input, Button } from "@chakra-ui/react";
 
 import { useMutation } from "@apollo/client";
 import { ADD_USER } from "../utils/mutations";
@@ -39,6 +41,8 @@ const Signup = () => {
   };
 
   return (
+    <>
+    <Header />
     <main className="flex-row justify-center mb-4">
       <div className="col-lg-6">
         <div className="card">
@@ -51,37 +55,40 @@ const Signup = () => {
               </p>
             ) : (
               <form onSubmit={handleFormSubmit}>
-                <input
+                <Input
                   className="form-input"
                   placeholder="Your username"
+                  _placeholder={{ color: "gray.500" }} // Needed to make the placeholder text visible in dark mode
                   name="username"
                   type="text"
                   value={formState.username}
                   onChange={handleChange}
                 />
-                <input
+                <Input
                   className="form-input"
                   placeholder="Your email"
+                  _placeholder={{ color: "gray.500" }} // Needed to make the placeholder text visible in dark mode
                   name="email"
                   type="email"
                   value={formState.email}
                   onChange={handleChange}
                 />
-                <input
+                <Input
                   className="form-input"
                   placeholder="******"
+                  _placeholder={{ color: "gray.500" }} // Needed to make the placeholder text visible in dark mode
                   name="password"
                   type="password"
                   value={formState.password}
                   onChange={handleChange}
                 />
-                <button
+                <Button
                   className="btn btn-block btn-primary"
                   style={{ cursor: "pointer" }}
                   type="submit"
                 >
                   Submit
-                </button>
+                </Button>
               </form>
             )}
 
@@ -94,6 +101,7 @@ const Signup = () => {
         </div>
       </div>
     </main>
+    </>
   );
 };
 
