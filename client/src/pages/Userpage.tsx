@@ -16,7 +16,7 @@ import { Link } from "react-router-dom";
 import Auth from "../utils/auth";
 import { QUERY_PROJECTS } from "../utils/queries";
 // import { Header } from "../components/Header";
-import ProjectList from "../components/ProjectList";
+import ProjectList from "../components/projectList";
 
 const Userpage = () => {
   const { loading, data } = useQuery(QUERY_PROJECTS);
