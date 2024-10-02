@@ -1,5 +1,4 @@
 import { useState, type FormEvent, type ChangeEvent } from "react";
-import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import { LOGIN_USER } from "../utils/mutations";
 import { Input, Button } from "@chakra-ui/react";
@@ -47,8 +46,7 @@ const Login = () => {
             <div className="card-body">
               {data ? (
                 <p>
-                  Success! You may now head{" "}
-                  <Link to="/userpage">back to the homepage.</Link>
+                  Success!
                 </p>
               ) : (
                 <form onSubmit={handleFormSubmit}>
