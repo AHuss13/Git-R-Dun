@@ -16,6 +16,9 @@ export const Header = () => (
         <Button colorScheme="green" m="5px">
           <Link to={"/login"}>Login</Link>
         </Button>
+
+        {/* Logout button if user is logged in */}
+
         <Button colorScheme="purple" m="5px">
           <Link to={"/signup"}>Register</Link>
         </Button>
