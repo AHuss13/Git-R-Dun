@@ -5,31 +5,30 @@ import {
   Card,
   CardHeader,
   CardBody,
-  // CardFooter,
   Container,
-  // Divider,
   Box,
   Text,
   Input,
   Select,
 } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Auth from "../utils/auth";
-import { QUERY_USERS } from "../utils/queries";
+import { QUERY_PROJECTS } from "../utils/queries";
+// import { Header } from "../components/Header";
+import ProjectList from "../components/ProjectList";
 
-function Userpage() {
-  const { username: userParam } = useParams();
+const Userpage = () => {
+  const { loading, data } = useQuery(QUERY_PROJECTS);
+  const projects = data?.projects || [];
 
-  const { loading, data } = useQuery(QUERY_USERS, {
-    variables: { username: userParam },
-  });
-
-  const user = data?.user || {};
-  // navigate to personal profile page if username is yours
+  // Display projects if logged in
   if (Auth.loggedIn()) {
     return (
       <>
+        <ProjectList projects={projects} />
+
+        <Text fontSize="xl">--------Below this is just Filler!!!--------</Text>
         <Card>
           <CardHeader>
             <Heading size="md">User Page</Heading>
@@ -128,14 +127,17 @@ function Userpage() {
     return <div>Loading...</div>;
   }
 
-  if (!user?.username) {
-    return (
-      <h4>
-        You need to be logged in to see this. Use the navigation links above to
-        sign up or log in!
-      </h4>
-    );
-  }
+  // if (!user?.username) {
+  //   return (
+  //     <>
+  //       <Header />
+  //       <h4>
+  //         You need to be logged in to see this. Use the navigation links above
+  //         to sign up or log in!
+  //       </h4>
+  //     </>
+  //   );
+  // }
 }
 
 export default Userpage;

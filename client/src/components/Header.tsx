@@ -1,35 +1,32 @@
-import { Heading, Wrap, Box, Grid, GridItem, Spacer} from "@chakra-ui/react";
+import { Heading, Wrap, Box, Text, Flex } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { ColorModeToggle } from "../utils/ColorMode";
 
 export const Header = () => (
   <>
-    <Grid templateColumns="repeat(3, 1fr)" templateRows="repeat(2, 1fr)">
-      <Spacer/>
+    <Heading as="h1" size="3xl" textAlign="center">
+      Git-R-Dun
+      <br />
+      <Text fontSize="2xl">Get your projects done!</Text>
+    </Heading>
 
-        <Heading as="h1" size="3xl" textAlign="center">
-          Git-R-Dun
-          <br />
-          <Heading as="h2" size="md">
-            Get your projects done!
-          </Heading>
-        </Heading>
+    <Flex alignItems={"end"}>
+      <Wrap>
+        <Button colorScheme="green" m="5px">
+          <Link to={"/login"}>Login</Link>
+        </Button>
 
-      <GridItem rowSpan={1} colSpan={1}>
-        <Wrap align="flex-end" flex-wrap>
-          <Button colorScheme="green" m="5px">
-            <Link to={"/login"}>Login</Link>
-          </Button>
-          <Button colorScheme="purple" m="5px">
-            <Link to={"/signup"}>Register</Link>
-          </Button>
-          <Box m="5px">
-            <ColorModeToggle />
-          </Box>
-        </Wrap>
-      </GridItem>
-    </Grid>
+        {/* Logout button if user is logged in */}
+
+        <Button colorScheme="purple" m="5px">
+          <Link to={"/signup"}>Register</Link>
+        </Button>
+        <Box m="5px">
+          <ColorModeToggle />
+        </Box>
+      </Wrap>
+    </Flex>
   </>
 );
 

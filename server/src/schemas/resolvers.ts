@@ -22,7 +22,7 @@ interface AddProjectArgs {
   input: {
     name: string;
     description: string;
-    owner: string;
+    // owner: string;
     members: string[];
   };
 }
@@ -123,11 +123,11 @@ const resolvers = {
     ) => {
       if (context.user) {
         // Find the user by the owner's username
-        const owner = await User.findOne({ username: input.owner });
+        // const owner = await User.findOne({ username: input.owner });
     
-        if (!owner) {
-          throw new Error('Owner not found');
-        }
+        // if (!owner) {
+        //   throw new Error('Owner not found');
+        // }
         const project = await Project.create({ ...input, owner: context.user._id });
 
         await User.findOneAndUpdate(
