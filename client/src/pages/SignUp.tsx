@@ -1,6 +1,5 @@
 import { useState, type FormEvent, type ChangeEvent } from "react";
 import { Link } from "react-router-dom";
-import { Header } from "../components/Header";
 import { Input, Button } from "@chakra-ui/react";
 
 import { useMutation } from "@apollo/client";
@@ -42,7 +41,6 @@ const Signup = () => {
 
   return (
     <>
-    <Header />
     <main className="flex-row justify-center mb-4">
       <div className="col-lg-6">
         <div className="card">
