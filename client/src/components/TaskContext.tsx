@@ -1,10 +1,25 @@
-import React, { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, ReactNode } from "react";
 import { useQuery } from "@apollo/client";
 import { QUERY_PROJECTS } from "../utils/queries";
 
+interface Task {
+  id: number;
+  name: string;
+  owner: string;
+  status: string;
+  description?: string;
+}
+
+interface TaskContextType {
+  tasks: Task[];
+  getTasksFromDatabase: () => void;
+  addTask: (taskName: string, taskDescription: string) => void;
+  updateTaskStatus: (taskId: number) => void;
+}
+
 // Create the provider component
-export const TaskProvider = ({ children }) => {
-  const [tasks, setTasks] = useState([
+export const TaskProvider = ({ children }: { children: ReactNode }) => {
+  const [tasks, setTasks] = useState<Task[]>([
     { id: 0, name: "Task Name", owner: "Task Owner", status: "Status" },
     { id: 1, name: "Task 1", owner: "John", status: "Done" },
     { id: 2, name: "Task 2", owner: "Jane", status: "In Progress" },
@@ -33,8 +48,8 @@ export const TaskProvider = ({ children }) => {
      */
   };
 
-  const addTask = (taskName, taskDescription) => {
-    const newTask = {
+  const addTask = (taskName: string, taskDescription: string) => {
+    const newTask: Task = {
       id: tasks.length + 1,
       name: taskName,
       owner: "New Owner",
@@ -44,7 +59,7 @@ export const TaskProvider = ({ children }) => {
     setTasks([...tasks, newTask]);
   };
 
-  const updateTaskStatus = (taskId) => {
+  const updateTaskStatus = (taskId: number) => {
     const updatedTasks = tasks.map((task) => {
       if (task.id === taskId) {
         const statusOrder = ["Not Started", "In Progress", "Done"];
@@ -54,7 +69,7 @@ export const TaskProvider = ({ children }) => {
       }
       return task;
     });
-    setTasks(updatedTasks);
+    setTasks(updatedTasks as Task[]);
   };
 
   return (
@@ -67,4 +82,4 @@ export const TaskProvider = ({ children }) => {
 };
 
 // Create the context
-export const TaskContext = createContext();
+export const TaskContext = createContext<TaskContextType | undefined>(undefined);
