@@ -17,6 +17,7 @@ import { Button } from "@chakra-ui/react";
 import { Link, useParams } from "react-router-dom";
 import Auth from "../utils/auth";
 import { QUERY_USERS } from "../utils/queries";
+import { Header } from "../components/Header";
 
 function Userpage() {
   const { username: userParam } = useParams();
@@ -30,6 +31,7 @@ function Userpage() {
   if (Auth.loggedIn()) {
     return (
       <>
+        <Header />
         <Card>
           <CardHeader>
             <Heading size="md">User Page</Heading>
@@ -130,10 +132,13 @@ function Userpage() {
 
   if (!user?.username) {
     return (
-      <h4>
-        You need to be logged in to see this. Use the navigation links above to
-        sign up or log in!
-      </h4>
+      <>
+        <Header />
+        <h4>
+          You need to be logged in to see this. Use the navigation links above
+          to sign up or log in!
+        </h4>
+      </>
     );
   }
 }
