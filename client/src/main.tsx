@@ -3,6 +3,7 @@ import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // import TaskList from "./components/taskList";
 // import Members from "./components/Members";
+import Projects from "./pages/ProjectPage";
 import Homepage from "./pages/Homepage";
 import Userpage from "./pages/Userpage";
 import ErrorPage from "./pages/ErrorPage";
@@ -27,10 +28,10 @@ const router = createBrowserRouter([
         path: "/signup",
         element: <SignUp />,
       },
-      // {
-      //   path: "/projectpage",
-      //   element: <Projects />,
-      // },
+      {
+        path: "/projectpage", //TODO add project id to path
+        element: <Projects />,
+      },
       // {
       //   path: "/members",
       //   element: <Members />,
@@ -45,9 +46,7 @@ const router = createBrowserRouter([
 
 const rootElement = document.getElementById("root");
 if (rootElement) {
-  ReactDOM.createRoot(rootElement).render(
-    <RouterProvider router={router} />
-  );
+  ReactDOM.createRoot(rootElement).render(<RouterProvider router={router} />);
 } else {
   console.error("Root element not found");
 }
