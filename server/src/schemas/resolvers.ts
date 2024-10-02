@@ -22,7 +22,7 @@ interface AddProjectArgs {
   input: {
     name: string;
     description: string;
-    owner: string;
+    // owner: string;
     members: string[];
   };
 }
