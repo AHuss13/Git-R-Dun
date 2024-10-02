@@ -6,7 +6,7 @@ export const QUERY_PROJECTS = gql`
       _id
       name
       description
-      owner
+      # owner
       members {
         _id
         username
@@ -22,7 +22,7 @@ export const QUERY_PROJECT = gql`
       _id
       name
       description
-      owner
+      # owner
       members {
         _id
         username
@@ -32,7 +32,7 @@ export const QUERY_PROJECT = gql`
         _id
         name
         status
-        owner
+        # owner
         createdAt
       }
     }
