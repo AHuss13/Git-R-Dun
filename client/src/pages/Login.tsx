@@ -5,7 +5,6 @@ import { LOGIN_USER } from "../utils/mutations";
 import { Input, Button } from "@chakra-ui/react";
 
 import Auth from "../utils/auth";
-import { Header } from "../components/Header";
 
 const Login = () => {
   const [formState, setFormState] = useState({ email: "", password: "" });
@@ -41,7 +40,6 @@ const Login = () => {
 
   return (
     <>
-      <Header />
       <main className="flex-row justify-center mb-4">
         <div className="col-12 col-lg-10">
           <div className="card">
@@ -50,7 +48,7 @@ const Login = () => {
               {data ? (
                 <p>
                   Success! You may now head{" "}
-                  <Link to="/">back to the homepage.</Link>
+                  <Link to="/userpage">back to the homepage.</Link>
                 </p>
               ) : (
                 <form onSubmit={handleFormSubmit}>
