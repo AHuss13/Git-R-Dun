@@ -1,6 +1,6 @@
 import mongoose, { Schema, model, Document} from "mongoose";
 import { ITask, taskSchema} from "./Task.js";
-import { IUser, userSchema } from "./User.js";
+import { IUser } from "./User.js";
 
 interface IProject extends Document {
   name: string;
@@ -21,11 +21,14 @@ const projectSchema = new Schema<IProject>({
     required: true,
   },
   owner: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: "User",
-    required: true
+    required: true,
   },
-  members: [userSchema],
+  members: [{
+    type: Schema.Types.ObjectId,
+    ref: "User"
+  }],
   createdAt: {
     type: Date,
     default: Date.now,
