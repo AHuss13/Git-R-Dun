@@ -55,7 +55,6 @@ class AuthService {
   // This method logs out the user by removing the token from localStorage and redirecting to the home page.
   logout() {
     localStorage.removeItem('id_token');
-    window.location.assign('/');
   }
 }
 
