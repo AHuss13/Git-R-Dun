@@ -11,9 +11,9 @@ try {
 
   console.log(userSeeds);
   // bulk create each model
-  await Project.insertMany(projectSeeds);
-
   await User.create(userSeeds);
+  
+  await Project.insertMany(projectSeeds);
 
   console.log("Seeding completed successfully!");
   process.exit(0);
