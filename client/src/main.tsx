@@ -29,7 +29,7 @@ const router = createBrowserRouter([
         element: <SignUp />,
       },
       {
-        path: "/projectpage", //TODO add project id to path
+        path: "/project/:id",
         element: <Projects />,
       },
       // {
