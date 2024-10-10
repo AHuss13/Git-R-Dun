@@ -1,10 +1,10 @@
 import { Schema, model, Document } from "mongoose";
-
+import { IUser } from './User'; // Add this import at the top of the file
 interface ITask extends Document {
   name: string;
   status: string;
   projectId: string;
-  owner: string;
+  owner: IUser;
   createdAt: Date;
 }
 
