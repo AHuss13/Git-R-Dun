@@ -85,7 +85,7 @@ const ProjectPage: React.FC = () => {
       if (id) {
         await updateProject({
           variables: {
-            projectId: id,
+            _id: id,
             name,
             description,
             members: selectedMembers,
@@ -97,7 +97,7 @@ const ProjectPage: React.FC = () => {
           variables: {
             name,
             description,
-            owner: Auth.getProfile().data.id
+            owner: Auth.getProfile().data.id,
           },
         });
         navigate(`/project/${data.addProject.id}`);

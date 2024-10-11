@@ -1,4 +1,4 @@
-import { useState, FormEvent, useEffect } from "react";
+import { useState, FormEvent } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import {
   Heading,
@@ -28,8 +28,16 @@ interface User {
 }
 
 const Userpage = () => {
-  const { loading: projectsLoading, data: projectsData, error: projectsError } = useQuery(QUERY_PROJECTS);
-  const { loading: usersLoading, data: usersData, error: usersError } = useQuery(QUERY_USERS);
+  const {
+    loading: projectsLoading,
+    data: projectsData,
+    error: projectsError,
+  } = useQuery(QUERY_PROJECTS);
+  const {
+    loading: usersLoading,
+    data: usersData,
+    error: usersError,
+  } = useQuery(QUERY_USERS);
   const projects = projectsData?.projects || [];
   const users = usersData?.users || [];
 
@@ -57,11 +65,11 @@ const Userpage = () => {
     event.preventDefault();
     try {
       const { data } = await addProject({
-        variables: { 
+        variables: {
           input: {
             name: formState.name,
             description: formState.description,
-            owner: formState.owner,
+            owner: formState.owner || Auth.getProfile().data.id,
           },
         },
       });
@@ -74,23 +82,30 @@ const Userpage = () => {
       });
     } catch (e) {
       console.error("Error adding project:", e);
+      if (e instanceof Error) {
+        // Display an error message to the user
+        alert(e.message);
+      } else {
+        // Handle other errors
+        alert("An error occurred while adding the project. Please try again.");
+      }
     }
   };
 
+  useEffect(() => {
+    if (projectsError) {
+      console.error("Error fetching projects:", projectsError);
+    }
+    if (usersError) {
+      console.error("Error fetching users:", usersError);
+    }
+    if (addProjectError) {
+      console.error("Error adding project:", addProjectError);
+    }
+  }, [projectsError, usersError, addProjectError]);
+
   if (projectsLoading || usersLoading) {
     return <Spinner />;
-  }
-
-  if (projectsError) {
-    console.error("Error fetching projects:", projectsError);
-  }
-
-  if (usersError) {
-    console.error("Error fetching users:", usersError);
-  }
-
-  if (addProjectError) {
-    console.error("Error adding project:", addProjectError);
   }
 
   if (!Auth.loggedIn()) {
@@ -133,7 +148,7 @@ const Userpage = () => {
                       onChange={handleChange}
                     />
                   </FormControl>
-                  <FormControl isRequired>
+                  <FormControl>
                     <FormLabel>Project Owner</FormLabel>
                     <Select
                       placeholder="Select project owner"
@@ -162,7 +177,9 @@ const Userpage = () => {
         </Card>
         {addProjectError && (
           <Box>
-            <Text color="red.500">Error creating project: {addProjectError.message}</Text>
+            <Text color="red.500">
+              Error creating project: {addProjectError.message}
+            </Text>
           </Box>
         )}
         <Button as={Link} to="/" colorScheme="blue">
