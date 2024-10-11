@@ -12,7 +12,11 @@ const db = async (): Promise<typeof mongoose.connection> => {
     return mongoose.connection;
   } catch (error) {
     console.error("Database connection error:", error);
-    throw new Error("Database connection failed.");
+    throw new Error(
+      `Failed to connect to the database. Original error: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
   }
 };
 

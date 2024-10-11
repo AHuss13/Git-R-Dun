@@ -1,8 +1,10 @@
+// GOLD!
+
 import { Project, User } from "../models/index.js";
 
 const cleanDB = async (): Promise<void> => {
   try {
-    // Delete documents from THought collection
+    // Delete documents from Project collection
     await Project.deleteMany({});
     console.log('All Projects in collection were eridicated by The Black Plague!');
 

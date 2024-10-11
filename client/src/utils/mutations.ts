@@ -38,18 +38,9 @@ export const ADD_PROJECT = gql`
       _id
       name
       description
-      owner
-      members {
+      owner {
         _id
         username
-      }
-      createdAt
-      tasks {
-        _id
-        name
-        status
-        owner
-        createdAt
       }
     }
   }

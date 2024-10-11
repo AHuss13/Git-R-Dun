@@ -18,12 +18,15 @@ interface UserArgs {
   username: string;
 }
 
+interface ProjectArgs {
+  projectId: string;
+}
+
 interface AddProjectArgs {
   input: {
     name: string;
     description: string;
     owner: string;
-    members: string[];
   };
 }
 
@@ -37,27 +40,26 @@ interface UpdateProjectArgs {
   _id: string;
   name: string;
   description: string;
-  members: string[];
   owner: string;
 }
 
-interface RemoveProjectArgs {
+interface RemoveTaskArgs {
   projectId: string;
   taskID: string;
 }
 
-interface ProjectArgs {
+interface RemoveProjectArgs {
   projectId: string;
 }
 
 const resolvers = {
   Query: {
     users: async () => {
-      return User.find().populate("projects");
+      return User.find();
     },
     user: async (_parent: any, { username }: UserArgs) => {
       try {
-        const user = await User.findOne({ username }).populate("projects");
+        const user = await User.findOne({ username });
         return user;
       } catch (error) {
         throw new Error("Failed to fetch user");
@@ -65,9 +67,7 @@ const resolvers = {
     },
     projects: async () => {
       try {
-        const projects = await Project.find()
-          .populate("members")
-          .populate("owner");
+        const projects = await Project.find();
         return projects;
       } catch (error) {
         throw new Error("Failed to fetch projects");
@@ -75,10 +75,7 @@ const resolvers = {
     },
     project: async (_parent: any, { projectId }: ProjectArgs) => {
       try {
-        const project = await Project.findOne({ _id: projectId })
-          .populate("members")
-          .populate("owner")
-          .populate("tasks");
+        const project = await Project.findOne({ _id: projectId });
         return project;
       } catch (error) {
         throw new Error("Failed to fetch project");
@@ -86,7 +83,7 @@ const resolvers = {
     },
     tasks: async () => {
       try {
-        const tasks = await Task.find().populate("owner");
+        const tasks = await Task.find();
         return tasks;
       } catch (error) {
         throw new Error("Failed to fetch tasks");
@@ -97,7 +94,7 @@ const resolvers = {
   Mutation: {
     addUser: async (_parent: any, { input }: AddUserArgs) => {
       try {
-        const user = await User.create({ ...input });
+        const user = await User.create(input);
         const token = signToken(user.username, user.email, user._id);
         return { token, user };
       } catch (error) {
@@ -127,38 +124,41 @@ const resolvers = {
       context: any
     ) => {
       if (context.user) {
-        const project = await Project.create({
-          ...input,
-          owner: input.owner || context.user._id,
-        });
+        try {
+          const project = await Project.create({
+            ...input,
+            owner: context.user._id,
+          });
 
-        await User.findOneAndUpdate(
-          { _id: project.owner },
-          { $push: { projects: project._id } }
-        );
+          await User.findOneAndUpdate(
+            { _id: project.owner },
+            { $push: { projects: project._id } }
+          );
 
-        return await Project.findById(project._id)
-          .populate("members")
-          .populate("owner");
+          return await Project.findById(project._id).populate("owner");
+        } catch (error: any) {
+          if (error.code === 11000) {
+            throw new Error("A project with this ID already exists");
+          }
+          throw error;
+        }
       }
       throw new AuthenticationError("You need to be logged in!");
     },
 
     updateProject: async (
       _parent: any,
-      { _id, name, description, members }: UpdateProjectArgs,
+      { _id, name, description }: UpdateProjectArgs,
       context: any
     ) => {
       if (context.user) {
         return Project.findOneAndUpdate(
           { _id },
-          { name, description, members },
+          { name, description },
           { new: true, runValidators: true }
-        )
-          .populate("members")
-          .populate("owner");
+        ).populate("owner");
       }
-      throw new AuthenticationError("You need to be logged in!");
+      throw new AuthenticationError("Failed to update project!");
     },
 
     addTask: async (
@@ -171,30 +171,42 @@ const resolvers = {
           { _id: projectId },
           {
             $push: {
-              tasks: { name, status, owner: context.user._id },
+              tasks: { name, status },
             },
           },
           {
             new: true,
             runValidators: true,
           }
-        );
+        ).populate("owner");
       }
-      throw new AuthenticationError("Failed to add Task!");
+      throw new AuthenticationError("Failed to add task!");
+    },
+
+    removeTask: async (
+      _parent: any,
+      { projectId, taskID }: RemoveTaskArgs,
+      context: any
+    ) => {
+      if (context.user) {
+        return Project.findOneAndUpdate(
+          { _id: projectId },
+          { $pull: { tasks: { _id: taskID } } },
+          { new: true }
+        ).populate("owner");
+      }
+      throw new AuthenticationError("Failed to remove task!");
     },
 
     removeProject: async (
       _parent: any,
-      { projectId, taskID }: RemoveProjectArgs,
+      { projectId }: RemoveProjectArgs,
       context: any
     ) => {
       if (context.user) {
-        return Project.findOneAndDelete(
-          { _id: projectId },
-          { task: { _id: taskID } }
-        );
+        return Project.findOneAndDelete({ _id: projectId }).populate("owner");
       }
-      throw new AuthenticationError("You need to be logged in!");
+      throw new AuthenticationError("Failed to remove project!");
     },
   },
 };

@@ -2,17 +2,41 @@ import { gql } from "apollo-server-express";
 
 const typeDefs = gql`
   type User {
-    _id: ID!
-    username: String!
-    email: String!
+    _id: ID
+    username: String
+    email: String
     password: String
     projects: [Project]!
   }
 
+  type Project {
+    _id: ID
+    name: String
+    description: String
+    owner: ID
+    tasks: [Task]!
+  }
+
+  type Task {
+    _id: ID
+    name: String
+    status: String
+  }
+
   input UserInput {
-    username: String!
-    email: String!
-    password: String!
+    username: String
+    email: String
+    password: String
+  }
+
+  input ProjectInput {
+    name: String!
+    description: String!
+  }
+
+  input TaskInput {
+    name: String!
+    status: String!
   }
 
   type Auth {
@@ -20,37 +44,13 @@ const typeDefs = gql`
     user: User
   }
 
-  type Project {
-    _id: ID!
-    name: String!
-    description: String
-    owner: User
-    members: [User]!
-    createdAt: String!
-    tasks: [Task]!
-  }
-
-  input ProjectInput {
-    name: String!
-    description: String!
-    owner: ID
-  }
-
-  type Task {
-    _id: ID!
-    name: String!
-    status: String!
-    owner: User
-    createdAt: String!
-  }
-
   type Query {
-    users: [User]!
-    user(userId: ID!): User
+    users: [User]
+    user(username: String!): User
     me: User
     projects: [Project]!
     project(projectId: ID!): Project
-    tasks: [Task]!
+    tasks: [Task]
     task(taskId: ID!): Task
   }
 
@@ -58,15 +58,9 @@ const typeDefs = gql`
     login(email: String!, password: String!): Auth
     addUser(input: UserInput!): Auth
     addProject(input: ProjectInput!): Project
-    addTask(name: String!, projectId: ID!, status: String): Task
-    updateProject(
-      projectId: ID!
-      name: String
-      description: String
-      members: [ID]
-      owner: ID
-    ): Project
-    removeUser(userId: ID!): User
+    addTask(projectId: ID!, input: TaskInput!): Task
+    updateProject(projectId: ID!, input: ProjectInput!): Project
+    removeUser(username: String!): User
     removeProject(projectId: ID!): Project
     removeTask(taskId: ID!): Task
   }
