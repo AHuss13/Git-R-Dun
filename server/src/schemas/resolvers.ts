@@ -22,7 +22,7 @@ interface AddProjectArgs {
   input: {
     name: string;
     description: string;
-    // owner: string;
+    owner: string;
     members: string[];
   };
 }
@@ -33,12 +33,13 @@ interface AddTaskArgs {
   status: string;
 }
 
-// interface UpdateProjectArgs {
-//   _id: string;
-//   name: string;
-//   description: string;
-//   members: string[];
-// }
+interface UpdateProjectArgs {
+  _id: string;
+  name: string;
+  description: string;
+  members: string[];
+  owner: string;
+}
 
 interface RemoveProjectArgs {
   projectId: string;
@@ -64,7 +65,9 @@ const resolvers = {
     },
     projects: async () => {
       try {
-        const projects = await Project.find();
+        const projects = await Project.find()
+          .populate("members")
+          .populate("owner");
         return projects;
       } catch (error) {
         throw new Error("Failed to fetch projects");
@@ -72,7 +75,10 @@ const resolvers = {
     },
     project: async (_parent: any, { projectId }: ProjectArgs) => {
       try {
-        const project = await Project.findOne({ _id: projectId });
+        const project = await Project.findOne({ _id: projectId })
+          .populate("members")
+          .populate("owner")
+          .populate("tasks");
         return project;
       } catch (error) {
         throw new Error("Failed to fetch project");
@@ -80,7 +86,7 @@ const resolvers = {
     },
     tasks: async () => {
       try {
-        const tasks = await Task.find();
+        const tasks = await Task.find().populate("owner");
         return tasks;
       } catch (error) {
         throw new Error("Failed to fetch tasks");
@@ -108,8 +114,7 @@ const resolvers = {
       const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
-        throw new AuthenticationError("Incorrect password credentials");
-        // TODO: Remove "password" from the error message after working
+        throw new AuthenticationError("Incorrect credentials");
       }
       const token = signToken(user.username, user.email, user._id);
 
@@ -122,20 +127,36 @@ const resolvers = {
       context: any
     ) => {
       if (context.user) {
-        // Find the user by the owner's username
-        // const owner = await User.findOne({ username: input.owner });
-    
-        // if (!owner) {
-        //   throw new Error('Owner not found');
-        // }
-        const project = await Project.create({ ...input, owner: context.user._id });
+        const project = await Project.create({
+          ...input,
+          owner: input.owner || context.user._id,
+        });
 
         await User.findOneAndUpdate(
-          { _id: context.user._id },
+          { _id: project.owner },
           { $push: { projects: project._id } }
         );
 
-        return project;
+        return await Project.findById(project._id)
+          .populate("members")
+          .populate("owner");
+      }
+      throw new AuthenticationError("You need to be logged in!");
+    },
+
+    updateProject: async (
+      _parent: any,
+      { _id, name, description, members }: UpdateProjectArgs,
+      context: any
+    ) => {
+      if (context.user) {
+        return Project.findOneAndUpdate(
+          { _id },
+          { name, description, members },
+          { new: true, runValidators: true }
+        )
+          .populate("members")
+          .populate("owner");
       }
       throw new AuthenticationError("You need to be logged in!");
     },
@@ -149,8 +170,8 @@ const resolvers = {
         return Project.findOneAndUpdate(
           { _id: projectId },
           {
-            $addToSet: {
-              task: { name, status },
+            $push: {
+              tasks: { name, status, owner: context.user._id },
             },
           },
           {
@@ -159,19 +180,8 @@ const resolvers = {
           }
         );
       }
-      throw new AuthenticationError("Failed to add Task"!);
+      throw new AuthenticationError("Failed to add Task!");
     },
-
-    // updateProject: async (parent, { id, name, description, members }) => {
-    //   const project = await Project.findOneAndUpdate({
-    //     id,
-    //     name,
-    //     description,
-    //     members,
-    //   });
-    //   console.log(project);
-    //   return project;
-    // },
 
     removeProject: async (
       _parent: any,
@@ -180,11 +190,11 @@ const resolvers = {
     ) => {
       if (context.user) {
         return Project.findOneAndDelete(
-          {_id: projectId},
-          {task: { _id: taskID }}
+          { _id: projectId },
+          { task: { _id: taskID } }
         );
       }
-      throw AuthenticationError;
+      throw new AuthenticationError("You need to be logged in!");
     },
   },
 };

@@ -2,7 +2,7 @@ import { Heading, Wrap, Box, Text, Flex } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { ColorModeToggle } from "../utils/ColorMode";
-
+import Auth from "../utils/auth";
 export const Header = () => (
   <>
     <Heading as="h1" size="3xl" textAlign="center">
@@ -13,15 +13,22 @@ export const Header = () => (
 
     <Flex alignItems={"end"}>
       <Wrap>
+        {/* Login button */}
         <Button colorScheme="green" m="5px">
           <Link to={"/login"}>Login</Link>
         </Button>
 
-        {/* Logout button if user is logged in */}
+        {/* Logout button */}
+        <Button colorScheme="red" m="5px" onClick={() => Auth.logout()}>
+          Logout
+        </Button>
 
+        {/* Register button */}
         <Button colorScheme="purple" m="5px">
           <Link to={"/signup"}>Register</Link>
         </Button>
+
+        {/* Color mode toggle */}
         <Box m="5px">
           <ColorModeToggle />
         </Box>

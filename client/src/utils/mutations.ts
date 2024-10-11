@@ -12,6 +12,14 @@ export const LOGIN_USER = gql`
   }
 `;
 
+export const LOGOUT_USER = gql`
+  mutation logout {
+    logout {
+      message
+    }
+  }
+`;
+
 export const ADD_USER = gql`
   mutation Mutation($input: UserInput!) {
     addUser(input: $input) {
@@ -69,3 +77,41 @@ export const ADD_TASK = gql`
     }
   }
 `;
+
+export const UPDATE_PROJECT = gql`
+  mutation updateProject($input: ProjectInput!) {
+    updateProject(input: $input) {
+      _id
+      name
+      description
+      owner {
+        _id
+        username
+      }
+      members {
+        _id
+        username
+      }
+      createdAt
+      tasks {
+        _id
+        name
+        status
+        owner {
+          _id
+          username
+        }
+        createdAt
+      }
+    }
+  }
+`;
+
+export const REMOVE_PROJECT = gql`
+  mutation removeProject($projectId: ID!) {
+    removeProject(projectId: $projectId) {
+      _id
+    }
+  }
+`;
+

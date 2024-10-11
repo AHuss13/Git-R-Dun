@@ -6,7 +6,10 @@ export const QUERY_PROJECTS = gql`
       _id
       name
       description
-      # owner
+      owner {
+        _id
+        username
+      }
       members {
         _id
         username
@@ -22,7 +25,10 @@ export const QUERY_PROJECT = gql`
       _id
       name
       description
-      # owner
+      owner {
+        _id
+        username
+      }
       members {
         _id
         username
@@ -32,7 +38,10 @@ export const QUERY_PROJECT = gql`
         _id
         name
         status
-        # owner
+        owner {
+          _id
+          username
+        }
         createdAt
       }
     }
@@ -49,7 +58,10 @@ export const QUERY_ME = gql`
         _id
         name
         description
-        owner
+        owner {
+          _id
+          username
+        }
         members {
           _id
           username
@@ -59,7 +71,10 @@ export const QUERY_ME = gql`
           _id
           name
           status
-          owner
+          owner {
+            _id
+            username
+          }
           createdAt
         }
       }
@@ -67,9 +82,19 @@ export const QUERY_ME = gql`
   }
 `;
 
+export const QUERY_USER = gql`
+  query user($userId: ID!) {
+    user(userId: $userId) {
+      _id
+      username
+      email
+    }
+  }
+`;
+
 export const QUERY_USERS = gql`
-  query user($username: String!) {
-    user(username: $username) {
+  query getUsers {
+    users {
       _id
       username
       email
@@ -83,8 +108,10 @@ export const QUERY_TASKS = gql`
       _id
       name
       status
-      projectId
-      owner
+      owner {
+        _id
+        username
+      }
       createdAt
     }
   }
