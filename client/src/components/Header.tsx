@@ -3,6 +3,7 @@ import { Button } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { ColorModeToggle } from "../utils/ColorMode";
 import Auth from "../utils/auth";
+
 export const Header = () => (
   <>
     <Heading as="h1" size="3xl" textAlign="center">
@@ -11,61 +12,45 @@ export const Header = () => (
       <Text fontSize="2xl">Get your projects done!</Text>
     </Heading>
 
-    <Flex alignItems={"end"}>
+    <Flex justifyContent="space-between" alignItems="center">
       <Wrap>
         {/* Login button */}
-        <Button colorScheme="green" m="5px">
-          <Link to={"/login"}>Login</Link>
-        </Button>
-
-        {/* Logout button */}
-        <Button colorScheme="red" m="5px" onClick={() => Auth.logout()}>
-          Logout
-        </Button>
+        {!Auth.loggedIn() && (
+          <Button colorScheme="green" m="5px">
+            <Link to={"/login"}>Login</Link>
+          </Button>
+        )}
 
         {/* Register button */}
-        <Button colorScheme="purple" m="5px">
-          <Link to={"/signup"}>Register</Link>
-        </Button>
+        {!Auth.loggedIn() && (
+          <Button colorScheme="purple" m="5px">
+            <Link to={"/signup"}>Register</Link>
+          </Button>
+        )}
+
+        {Auth.loggedIn() && (
+          <Button colorScheme="purple" m="5px" ml="10px">
+            <Link to={"/userpage"}>Userpage</Link>
+          </Button>
+        )}
 
         {/* Color mode toggle */}
         <Box m="5px">
           <ColorModeToggle />
         </Box>
       </Wrap>
+
+      {/* Logout button */}
+      {Auth.loggedIn() && (
+        <Button
+          colorScheme="red"
+          m="5px"
+          mr="10px"
+          onClick={() => Auth.logout()}
+        >
+          Logout
+        </Button>
+      )}
     </Flex>
   </>
 );
-
-//==== This is just me playing around with the layout to see what I can do with it =====//
-
-// import { Heading, Flex, Box, Grid, GridItem, Spacer} from "@chakra-ui/react";
-
-// export const Header = () => (
-//   <>
-//     <Grid templateColumns="repeat(3, 1fr)" templateRows="repeat(2, 1fr)">
-//       <Spacer/>
-//       <GridItem rowSpan={2} colSpan={1}>
-//         <Heading as="h1" size="3xl" textAlign="center">
-//           Git-R-Dun
-//           <Heading as="h2" size="md">
-//             Get your projects done!
-//           </Heading>
-//         </Heading>
-//       </GridItem>
-//       <GridItem rowSpan={1} colSpan={1}>
-//         <Flex align="flex-end" flex-wrap>
-//           <Button colorScheme="purple" m="5px">
-//             <Link to={"/login"}>Login</Link>
-//           </Button>
-//           <Button colorScheme="purple" m="5px">
-//             <Link to={"/signup"}>Register</Link>
-//           </Button>
-//           <Box m="5px">
-//             <ColorModeToggle />
-//           </Box>
-//         </Flex>
-//       </GridItem>
-//     </Grid>
-//   </>
-// );
