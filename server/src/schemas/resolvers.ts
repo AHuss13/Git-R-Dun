@@ -1,3 +1,5 @@
+// Be careful with changing this file!
+
 import { User, Project, Task } from "../models/index.js";
 import { signToken, AuthenticationError } from "../utils/auth.js";
 
@@ -92,30 +94,33 @@ const resolvers = {
   },
 
   Mutation: {
-    addUser: async (_parent: any, { input }: AddUserArgs) => {
+    addUser: async (_parent: unknown, { input }: AddUserArgs) => {
       try {
         const user = await User.create(input);
         const token = signToken(user.username, user.email, user._id);
         return { token, user };
       } catch (error) {
-        throw new Error("Failed to create user");
+        throw new Error(`Failed to create user: ${error}`);
       }
     },
 
-    login: async (_parent: any, { email, password }: LoginUserArgs) => {
-      const user = await User.findOne({ email });
-      if (!user) {
-        throw new AuthenticationError("Incorrect credentials");
+    login: async (_parent: unknown, { email, password }: LoginUserArgs) => {
+      try {
+        const user = await User.findOne({ email });
+        if (!user) {
+          throw new AuthenticationError("Incorrect credentials");
+        }
+
+        const correctPw = await user.isCorrectPassword(password);
+        if (!correctPw) {
+          throw new AuthenticationError("Incorrect credentials");
+        }
+
+        const token = signToken(user.username, user.email, user._id);
+        return { token, user };
+      } catch (error) {
+        throw new Error(`Login failed: ${error}`);
       }
-
-      const correctPw = await user.isCorrectPassword(password);
-
-      if (!correctPw) {
-        throw new AuthenticationError("Incorrect credentials");
-      }
-      const token = signToken(user.username, user.email, user._id);
-
-      return { token, user };
     },
 
     addProject: async (
