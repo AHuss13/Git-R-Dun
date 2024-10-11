@@ -1,3 +1,5 @@
+// Be careful about changing this!
+
 import { Schema, model, Document } from "mongoose";
 import bcrypt from "bcrypt";
 
@@ -52,6 +54,7 @@ userSchema.pre<IUser>("save", async function (next) {
 });
 
 userSchema.methods.isCorrectPassword = async function (
+  this: IUser,
   password: string
 ): Promise<boolean> {
   return bcrypt.compare(password, this.password);
