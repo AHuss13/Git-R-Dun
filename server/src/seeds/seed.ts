@@ -1,3 +1,5 @@
+// GOLD!
+
 import db from "../config/connection.js";
 import { User, Project } from "../models/index.js";
 import cleanDB from "./cleanDB.js";

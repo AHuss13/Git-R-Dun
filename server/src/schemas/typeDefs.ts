@@ -1,3 +1,5 @@
+// Be careful with changing this file!
+
 import { gql } from "apollo-server-express";
 
 const typeDefs = gql`
