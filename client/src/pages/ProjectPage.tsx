@@ -58,20 +58,6 @@ const ProjectPage: React.FC = () => {
     }
   }, [data, id]);
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        // Update this URL to your deployed backend URL
-        const response = await fetch('https://your-backend-url.onrender.com/api/projects');
-        // ...
-      } catch (error) {
-        console.error('Error fetching projects:', error);
-      }
-    };
-
-    fetchProjects();
-  }, []);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {

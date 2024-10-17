@@ -22,5 +22,8 @@
   "dependencies": {
     "@types/react-select": "^5.0.1",
     "react-select": "^5.8.1"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }
