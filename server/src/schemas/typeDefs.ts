@@ -15,7 +15,6 @@ const typeDefs = gql`
     _id: ID
     name: String
     description: String
-    owner: ID
     tasks: [Task]!
   }
 
