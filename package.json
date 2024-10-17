@@ -25,6 +25,6 @@
     "react-select": "^5.8.1"
   },
   "engines": {
-    "node": "22.x"
+    "node": "21.7.1"
   }
 }
