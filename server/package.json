@@ -24,7 +24,11 @@
     "graphql": "^16.9.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^8.4.3",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "@types/bcrypt": "^5.0.2",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "nodemon": "^3.1.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

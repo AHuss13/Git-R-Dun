@@ -11,6 +11,15 @@ importers:
       '@apollo/server':
         specifier: ^4.10.4
         version: 4.11.0(graphql@16.9.0)
+      '@types/bcrypt':
+        specifier: ^5.0.2
+        version: 5.0.2
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.21
+      '@types/jsonwebtoken':
+        specifier: ^9.0.6
+        version: 9.0.7
       apollo-server-express:
         specifier: ^3.6.0
         version: 3.13.0(express@4.21.0)(graphql@16.9.0)
@@ -32,22 +41,12 @@ importers:
       mongoose:
         specifier: ^8.4.3
         version: 8.6.3
-      typescript:
-        specifier: ^5.4.5
-        version: 5.6.2
-    devDependencies:
-      '@types/bcrypt':
-        specifier: ^5.0.2
-        version: 5.0.2
-      '@types/express':
-        specifier: ^4.17.21
-        version: 4.17.21
-      '@types/jsonwebtoken':
-        specifier: ^9.0.6
-        version: 9.0.7
       nodemon:
         specifier: ^3.1.0
         version: 3.1.7
+      typescript:
+        specifier: ^5.4.5
+        version: 5.6.2
 
 packages:
 
