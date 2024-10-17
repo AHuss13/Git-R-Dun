@@ -6,7 +6,6 @@ import { ITask, taskSchema } from "./Task.js";
 interface IProject extends Document {
   name: string;
   description: string;
-  owner: Schema.Types.ObjectId;
   tasks: ITask[];
 }
 
@@ -15,6 +14,8 @@ const projectSchema = new Schema<IProject>({
     type: String,
     required: true,
     trim: true,
+    minlength: 1,
+    maxlength: 280,
   },
   description: {
     type: String,
@@ -22,11 +23,6 @@ const projectSchema = new Schema<IProject>({
     trim: true,
     minlength: 1,
     maxlength: 280,
-  },
-  owner: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
   },
   tasks: [taskSchema],
 });
