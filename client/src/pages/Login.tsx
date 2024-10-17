@@ -1,13 +1,17 @@
 import { useState, type FormEvent, type ChangeEvent } from "react";
 import { useMutation } from "@apollo/client";
 import { LOGIN_USER } from "../utils/mutations";
-import { Input, Button } from "@chakra-ui/react";
+import { Input, Button, Box, Text } from "@chakra-ui/react";
 
 import Auth from "../utils/auth";
 
 const Login = () => {
   const [formState, setFormState] = useState({ email: "", password: "" });
-  const [login, { error, data }] = useMutation(LOGIN_USER);
+  const [login, { error, data }] = useMutation(LOGIN_USER, {
+    onError: (error) => {
+      console.error('Login error:', error);
+    },
+  });
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -79,9 +83,14 @@ const Login = () => {
               )}
 
               {error && (
-                <div className="my-3 p-3 bg-danger text-white">
-                  {error.message}
-                </div>
+                <Box my={3} p={3} bg="red.500" color="white">
+                  <Text fontWeight="bold">Error:</Text>
+                  <Text>{error.message}</Text>
+                  {error.graphQLErrors?.map((err, index) => (
+                    <Text key={index}>{err.message}</Text>
+                  ))}
+                  {error.networkError && <Text>Network error: {error.networkError.message}</Text>}
+                </Box>
               )}
             </div>
           </div>
