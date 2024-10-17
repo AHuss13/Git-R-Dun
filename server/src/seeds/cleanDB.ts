@@ -1,21 +1,24 @@
 // GOLD!
 
-import { Project, User } from "../models/index.js";
+import { Project, Task, User } from "../models/index.js";
 
 const cleanDB = async (): Promise<void> => {
   try {
-    // Delete documents from Project collection
+    await Task.deleteMany({});
+    console.log("All Tasks in collection were destroyed by Godzilla!");
+
     await Project.deleteMany({});
-    console.log('All Projects in collection were eridicated by The Black Plague!');
+    console.log(
+      "All Projects in collection were eridicated by The Black Plague!"
+    );
 
-    // Delete documents from User collection
     await User.deleteMany({});
-    console.log('Users were wiped out by dysentary!');
-
+    console.log("Users were wiped out by dysentary!");
   } catch (err) {
-    console.error('Error cleaning your trophy collections:', err);
+    console.error("Error cleaning your trophy collections:", err);
     process.exit(1);
   }
+  console.log("Database cleaned successfully!");
 };
 
 export default cleanDB;

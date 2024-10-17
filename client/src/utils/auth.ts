@@ -1,13 +1,13 @@
-import { type JwtPayload, jwtDecode } from 'jwt-decode';
+import { type JwtPayload, jwtDecode } from "jwt-decode";
 
 // Extending the JwtPayload interface to include additional data fields specific to the application.
 interface ExtendedJwt extends JwtPayload {
-  data:{
-    username:string,
-    email:string,
-    id:string
-  }
-};
+  data: {
+    username: string;
+    email: string;
+    id: string;
+  };
+}
 
 class AuthService {
   // This method decodes the JWT token to get the user's profile information.
@@ -41,20 +41,21 @@ class AuthService {
 
   // This method retrieves the token from localStorage.
   getToken(): string {
-    const loggedUser = localStorage.getItem('id_token') || '';
+    const loggedUser = localStorage.getItem("id_token") || "";
     // Returns the token stored in localStorage.
     return loggedUser;
   }
 
   // This method logs in the user by storing the token in localStorage and redirecting to the home page.
   login(idToken: string) {
-    localStorage.setItem('id_token', idToken);
-    window.location.assign('/userpage');
+    localStorage.setItem("id_token", idToken);
+    window.location.assign("/userpage");
   }
 
   // This method logs out the user by removing the token from localStorage and redirecting to the home page.
   logout() {
-    localStorage.removeItem('id_token');
+    localStorage.removeItem("id_token");
+    window.location.assign("/");
   }
 }
 

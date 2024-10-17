@@ -3,7 +3,6 @@ import { Schema, model, Document } from "mongoose";
 interface ITask extends Document {
   name: string;
   status: string;
-  owner: string;
 }
 
 const taskSchema = new Schema<ITask>({

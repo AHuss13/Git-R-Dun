@@ -6,15 +6,6 @@ export const QUERY_PROJECTS = gql`
       _id
       name
       description
-      owner {
-        _id
-        username
-      }
-      members {
-        _id
-        username
-      }
-      createdAt
     }
   }
 `;
@@ -25,24 +16,10 @@ export const QUERY_PROJECT = gql`
       _id
       name
       description
-      owner {
-        _id
-        username
-      }
-      members {
-        _id
-        username
-      }
-      createdAt
       tasks {
         _id
         name
         status
-        owner {
-          _id
-          username
-        }
-        createdAt
       }
     }
   }
@@ -58,25 +35,6 @@ export const QUERY_ME = gql`
         _id
         name
         description
-        owner {
-          _id
-          username
-        }
-        members {
-          _id
-          username
-        }
-        createdAt
-        tasks {
-          _id
-          name
-          status
-          owner {
-            _id
-            username
-          }
-          createdAt
-        }
       }
     }
   }
@@ -88,6 +46,11 @@ export const QUERY_USER = gql`
       _id
       username
       email
+      projects {
+        _id
+        name
+        description
+      }
     }
   }
 `;
@@ -108,11 +71,6 @@ export const QUERY_TASKS = gql`
       _id
       name
       status
-      owner {
-        _id
-        username
-      }
-      createdAt
     }
   }
 `;

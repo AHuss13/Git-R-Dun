@@ -12,20 +12,13 @@ import {
   Spinner,
   FormControl,
   FormLabel,
-  Select,
   Button,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import Auth from "../utils/auth";
-import { QUERY_PROJECTS, QUERY_USERS } from "../utils/queries";
+import { QUERY_PROJECTS } from "../utils/queries";
 import { ADD_PROJECT } from "../utils/mutations";
 import ProjectList from "../components/projectList";
-
-interface User {
-  _id: string;
-  username: string;
-  email: string;
-}
 
 const Userpage = () => {
   const {
@@ -33,18 +26,11 @@ const Userpage = () => {
     data: projectsData,
     error: projectsError,
   } = useQuery(QUERY_PROJECTS);
-  const {
-    loading: usersLoading,
-    data: usersData,
-    error: usersError,
-  } = useQuery(QUERY_USERS);
   const projects = projectsData?.projects || [];
-  const users = usersData?.users || [];
 
   const [formState, setFormState] = useState({
     name: "",
     description: "",
-    owner: "",
   });
 
   const [addProject, { error: addProjectError }] = useMutation(ADD_PROJECT, {
@@ -69,7 +55,6 @@ const Userpage = () => {
           input: {
             name: formState.name,
             description: formState.description,
-            owner: formState.owner || Auth.getProfile().data.id,
           },
         },
       });
@@ -78,7 +63,6 @@ const Userpage = () => {
       setFormState({
         name: "",
         description: "",
-        owner: "",
       });
     } catch (e) {
       console.error("Error adding project:", e);
@@ -96,15 +80,12 @@ const Userpage = () => {
     if (projectsError) {
       console.error("Error fetching projects:", projectsError);
     }
-    if (usersError) {
-      console.error("Error fetching users:", usersError);
-    }
     if (addProjectError) {
       console.error("Error adding project:", addProjectError);
     }
-  }, [projectsError, usersError, addProjectError]);
+  }, [projectsError, addProjectError]);
 
-  if (projectsLoading || usersLoading) {
+  if (projectsLoading) {
     return <Spinner />;
   }
 
@@ -147,25 +128,6 @@ const Userpage = () => {
                       value={formState.description}
                       onChange={handleChange}
                     />
-                  </FormControl>
-                  <FormControl>
-                    <FormLabel>Project Owner</FormLabel>
-                    <Select
-                      placeholder="Select project owner"
-                      name="owner"
-                      value={formState.owner}
-                      onChange={handleChange}
-                    >
-                      {users.length > 0 ? (
-                        users.map((user: User) => (
-                          <option key={user._id} value={user._id}>
-                            {user.username}
-                          </option>
-                        ))
-                      ) : (
-                        <option disabled>No users available</option>
-                      )}
-                    </Select>
                   </FormControl>
                   <Button type="submit" colorScheme="purple" width="full">
                     Create Project

@@ -21,7 +21,7 @@ export const LOGOUT_USER = gql`
 `;
 
 export const ADD_USER = gql`
-  mutation Mutation($input: UserInput!) {
+  mutation addUser($input: UserInput!) {
     addUser(input: $input) {
       user {
         username
@@ -38,62 +38,36 @@ export const ADD_PROJECT = gql`
       _id
       name
       description
-      owner {
-        _id
-        username
-      }
     }
   }
 `;
 
 export const ADD_TASK = gql`
-  mutation addTask(
-    $name: String!
-    $projectId: ID!
-    $owner: ID!
-    $status: String
-  ) {
-    addTask(
-      name: $name
-      projectId: $projectId
-      owner: $owner
-      status: $status
-    ) {
+  mutation addTask($projectId: ID!, $input: TaskInput!) {
+    addTask(projectId: $projectId, input: $input) {
       _id
       name
-      projectId
       status
-      owner
-      createdAt
     }
   }
 `;
 
 export const UPDATE_PROJECT = gql`
-  mutation updateProject($input: ProjectInput!) {
-    updateProject(input: $input) {
+  mutation updateProject($projectId: ID!, $input: ProjectInput!) {
+    updateProject(projectId: $projectId, input: $input) {
       _id
       name
       description
-      owner {
-        _id
-        username
-      }
-      members {
-        _id
-        username
-      }
-      createdAt
-      tasks {
-        _id
-        name
-        status
-        owner {
-          _id
-          username
-        }
-        createdAt
-      }
+    }
+  }
+`;
+
+export const UPDATE_TASK = gql`
+  mutation updateTask($input: TaskInput!) {
+    updateTask(input: $input) {
+      _id
+      name
+      status
     }
   }
 `;
@@ -101,6 +75,14 @@ export const UPDATE_PROJECT = gql`
 export const REMOVE_PROJECT = gql`
   mutation removeProject($projectId: ID!) {
     removeProject(projectId: $projectId) {
+      _id
+    }
+  }
+`;
+
+export const REMOVE_TASK = gql`
+  mutation removeTask($taskId: ID!) {
+    removeTask(taskId: $taskId) {
       _id
     }
   }

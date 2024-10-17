@@ -1,8 +1,7 @@
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-// import TaskList from "./components/taskList";
-// import Members from "./components/Members";
+
 import Projects from "./pages/ProjectPage";
 import Homepage from "./pages/Homepage";
 import Userpage from "./pages/Userpage";
@@ -32,10 +31,6 @@ const router = createBrowserRouter([
         path: "/project/:id",
         element: <Projects />,
       },
-      // {
-      //   path: "/members",
-      //   element: <Members />,
-      // },
       {
         path: "/userpage",
         element: <Userpage />,

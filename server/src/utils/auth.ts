@@ -19,7 +19,8 @@ export const authenticateToken = ({ req }: any) => {
 
   // Try to verify the token
   try {
-    const { data }: any = jwt.verify(token, process.env.JWT_SECRET_KEY || "", {
+    const secretKey = process.env.JWT_SECRET_KEY as string;
+    const { data }: any = jwt.verify(token, secretKey, {
       maxAge: "2hr",
     });
     // If the token is valid, attach the user data to the request object
