@@ -1,5 +1,6 @@
 import express from "express";
 import path from "path";
+
 import type { Request, Response } from "express";
 // Import the ApolloServer class
 import { ApolloServer } from "@apollo/server";
@@ -12,7 +13,11 @@ import db from "./config/connection.js";
 
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  formatError: (error) => {
+    console.error('GraphQL Error:', error);
+    return error;
+  },
 });
 
 // Create a new instance of an Apollo server with the GraphQL schema
@@ -27,7 +32,7 @@ const startApolloServer = async () => {
   app.use(express.json());
 
   app.use(
-    "/graphql",
+    '/graphql',
     expressMiddleware(server as any, {
       context: authenticateToken as any,
     })
