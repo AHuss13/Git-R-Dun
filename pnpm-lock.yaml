@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@types/react':
+        specifier: ^18.2.0
+        version: 18.3.11
+      '@types/react-dom':
+        specifier: ^18.2.0
+        version: 18.3.1
       '@types/react-select':
         specifier: ^5.0.1
         version: 5.0.1(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -15,12 +21,6 @@ importers:
         specifier: ^5.8.1
         version: 5.8.1(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
-      '@types/react':
-        specifier: ^18.2.0
-        version: 18.3.11
-      '@types/react-dom':
-        specifier: ^18.2.0
-        version: 18.3.1
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
