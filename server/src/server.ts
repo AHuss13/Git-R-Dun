@@ -11,11 +11,16 @@ import { authenticateToken } from "./utils/auth.js";
 
 import db from "./config/connection.js";
 
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   formatError: (error) => {
-    console.error('GraphQL Error:', error);
+    console.error("GraphQL Error:", error);
     return error;
   },
 });
@@ -32,7 +37,7 @@ const startApolloServer = async () => {
   app.use(express.json());
 
   app.use(
-    '/graphql',
+    "/graphql",
     expressMiddleware(server as any, {
       context: authenticateToken as any,
     })
