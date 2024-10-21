@@ -10,11 +10,17 @@ importers:
     dependencies:
       '@types/react-select':
         specifier: ^5.0.1
-        version: 5.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 5.0.1(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-select:
         specifier: ^5.8.1
-        version: 5.8.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        version: 5.8.1(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
+      '@types/react':
+        specifier: ^18.2.0
+        version: 18.3.11
+      '@types/react-dom':
+        specifier: ^18.2.0
+        version: 18.3.1
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
@@ -160,6 +166,9 @@ packages:
 
   '@types/prop-types@15.7.13':
     resolution: {integrity: sha512-hCZTSvwbzWGvhqxp/RqVqwU999pBf2vp7hzIjiYOsl8wqOmUxkQ6ddw1cV3l8811+kdUFus/q4d1Y3E3SyEifA==}
+
+  '@types/react-dom@18.3.1':
+    resolution: {integrity: sha512-qW1Mfv8taImTthu4KoXgDfLuk4bydU6Q/TkADnDWWHwi4NX4BR+LWfTp2sVmTqRrsHvyDDTelgelxJ+SsejKKQ==}
 
   '@types/react-select@5.0.1':
     resolution: {integrity: sha512-h5Im0AP0dr4AVeHtrcvQrLV+gmPa7SA0AGdxl2jOhtwiE6KgXBFSogWw8az32/nusE6AQHlCOHQWjP1S/+oMWA==}
@@ -629,7 +638,7 @@ snapshots:
 
   '@emotion/memoize@0.9.0': {}
 
-  '@emotion/react@11.13.3(react@18.3.1)':
+  '@emotion/react@11.13.3(@types/react@18.3.11)(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.25.7
       '@emotion/babel-plugin': 11.12.0
@@ -640,6 +649,8 @@ snapshots:
       '@emotion/weak-memoize': 0.4.0
       hoist-non-react-statics: 3.3.2
       react: 18.3.1
+    optionalDependencies:
+      '@types/react': 18.3.11
     transitivePeerDependencies:
       - supports-color
 
@@ -709,9 +720,13 @@ snapshots:
 
   '@types/prop-types@15.7.13': {}
 
-  '@types/react-select@5.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+  '@types/react-dom@18.3.1':
     dependencies:
-      react-select: 5.8.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@types/react': 18.3.11
+
+  '@types/react-select@5.0.1(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      react-select: 5.8.1(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     transitivePeerDependencies:
       - '@types/react'
       - react
@@ -949,11 +964,11 @@ snapshots:
 
   react-is@16.13.1: {}
 
-  react-select@5.8.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-select@5.8.1(@types/react@18.3.11)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.25.7
       '@emotion/cache': 11.13.1
-      '@emotion/react': 11.13.3(react@18.3.1)
+      '@emotion/react': 11.13.3(@types/react@18.3.11)(react@18.3.1)
       '@floating-ui/dom': 1.6.11
       '@types/react-transition-group': 4.4.11
       memoize-one: 6.0.0
@@ -961,7 +976,7 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
       react-transition-group: 4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      use-isomorphic-layout-effect: 1.1.2(react@18.3.1)
+      use-isomorphic-layout-effect: 1.1.2(@types/react@18.3.11)(react@18.3.1)
     transitivePeerDependencies:
       - '@types/react'
       - supports-color
@@ -1039,9 +1054,11 @@ snapshots:
 
   typescript@5.6.3: {}
 
-  use-isomorphic-layout-effect@1.1.2(react@18.3.1):
+  use-isomorphic-layout-effect@1.1.2(@types/react@18.3.11)(react@18.3.1):
     dependencies:
       react: 18.3.1
+    optionalDependencies:
+      '@types/react': 18.3.11
 
   wait-on@7.2.0:
     dependencies:
