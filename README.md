@@ -11,5 +11,5 @@ MongoDB
 MERN
 
 Contributors:
-Trey Shearin
 Adam Huss
+Trey Shearin
