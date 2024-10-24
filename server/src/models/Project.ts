@@ -1,7 +1,7 @@
 // Be careful about changing this!
 
 import { Schema, model, Document } from "mongoose";
-import { ITask, taskSchema } from "./Task.js";
+import { ITask } from "./Task.js";
 
 interface IProject extends Document {
   name: string;
@@ -24,7 +24,7 @@ const projectSchema = new Schema<IProject>({
     minlength: 1,
     maxlength: 280,
   },
-  tasks: [taskSchema],
+  tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
 });
 
 const Project = model<IProject>("Project", projectSchema);
