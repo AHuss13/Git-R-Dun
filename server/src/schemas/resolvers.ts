@@ -3,6 +3,10 @@
 import { User, Project, Task } from "../models/index.js";
 import { signToken, AuthenticationError } from "../utils/auth.js";
 
+interface UserArgs {
+  username: string;
+}
+
 interface AddUserArgs {
   input: {
     username: string;
@@ -16,10 +20,6 @@ interface LoginUserArgs {
   password: string;
 }
 
-interface UserArgs {
-  username: string;
-}
-
 interface ProjectArgs {
   projectId: string;
 }
@@ -28,14 +28,6 @@ interface AddProjectArgs {
   input: {
     name: string;
     description: string;
-  };
-}
-
-interface AddTaskArgs {
-  projectId: string;
-  input: {
-    name: string;
-    status: string;
   };
 }
 
@@ -49,6 +41,18 @@ interface UpdateProjectArgs {
 
 interface RemoveProjectArgs {
   projectId: string;
+}
+
+interface TaskArgs {
+  taskId: string;
+}
+
+interface AddTaskArgs {
+  projectId: string;
+  input: {
+    name: string;
+    status: string;
+  };
 }
 
 interface RemoveTaskArgs {
@@ -81,7 +85,7 @@ const resolvers = {
 
     project: async (_parent: any, { projectId }: ProjectArgs) => {
       try {
-        const project = await Project.findById(projectId);
+        const project = await Project.findById(projectId).populate("tasks");
         return project;
       } catch (error) {
         throw new Error("Failed to fetch project");
@@ -93,6 +97,24 @@ const resolvers = {
         return User.findOne({ _id: context.user._id }).populate("projects");
       }
       throw new AuthenticationError("You need to be logged in!");
+    },
+
+    tasks: async () => {
+      try {
+        const tasks = await Task.find();
+        return tasks;
+      } catch (error) {
+        throw new Error("Failed to fetch tasks");
+      }
+    },
+
+    task: async (_parent: any, { taskId }: TaskArgs) => {
+      try {
+        const task = await Task.findById(taskId);
+        return task;
+      } catch (error) {
+        throw new Error("Failed to fetch task");
+      }
     },
   },
 
@@ -159,18 +181,13 @@ const resolvers = {
       context: any
     ) => {
       if (context.user) {
-        return Task.findOneAndUpdate(
-          { _id: projectId },
-          {
-            $addToSet: {
-              tasks: input,
-            },
-          },
-          {
-            new: true,
-            runValidators: true,
-          }
+        const task = await Task.create(input);
+        await Project.findByIdAndUpdate(
+          projectId,
+          { $push: { tasks: task._id } },
+          { new: true }
         );
+        return task;
       }
       throw new AuthenticationError("Failed to add task!");
     },

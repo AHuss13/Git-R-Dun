@@ -1,5 +1,9 @@
 {
   "name": "Project 1",
   "description": "This is project 1",
-  "tasks": []
+  "tasks": [
+    {
+      "$oid": "67180ccce82cfc0f72299e6a"
+    }
+  ]
 }
