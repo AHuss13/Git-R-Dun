@@ -12,11 +12,12 @@ import {
   FormLabel,
   Input,
   Textarea,
+  Select,
 } from "@chakra-ui/react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_PROJECT } from "../utils/queries";
-import { ADD_PROJECT, UPDATE_PROJECT } from "../utils/mutations";
+import { ADD_PROJECT, UPDATE_PROJECT, ADD_TASK } from "../utils/mutations";
 
 interface Task {
   _id: string;
@@ -37,6 +38,8 @@ const ProjectPage: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [taskName, setTaskName] = useState("");
+  const [taskStatus, setTaskStatus] = useState("Not Started");
   const { loading, error, data } = useQuery<{ project: Project }>(
     QUERY_PROJECT,
     {
@@ -50,6 +53,27 @@ const ProjectPage: React.FC = () => {
   });
 
   const [updateProject] = useMutation(UPDATE_PROJECT);
+  const [addTask] = useMutation(ADD_TASK, {
+    update(cache, { data: { addTask } }) {
+      const existingProject = cache.readQuery<{ project: Project }>({
+        query: QUERY_PROJECT,
+        variables: { projectId: id },
+      });
+
+      if (existingProject && existingProject.project) {
+        cache.writeQuery({
+          query: QUERY_PROJECT,
+          variables: { projectId: id },
+          data: {
+            project: {
+              ...existingProject.project,
+              tasks: [...existingProject.project.tasks, addTask],
+            },
+          },
+        });
+      }
+    },
+  });
 
   useEffect(() => {
     if (data?.project && id) {
@@ -86,6 +110,25 @@ const ProjectPage: React.FC = () => {
       setDescription("");
     } catch (err: unknown) {
       console.error("Error saving project:", err);
+    }
+  };
+
+  const handleAddTask = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await addTask({
+        variables: {
+          projectId: id,
+          input: {
+            name: taskName,
+            status: taskStatus,
+          },
+        },
+      });
+      setTaskName("");
+      setTaskStatus("Not Started");
+    } catch (err: unknown) {
+      console.error("Error adding task:", err);
     }
   };
 
@@ -140,6 +183,9 @@ const ProjectPage: React.FC = () => {
     <Box>
       <Heading as="h2">{projectName}</Heading>
       <Text>{projectDescription}</Text>
+      <Button mt={4} onClick={() => setIsEditing(true)}>
+        Edit Project
+      </Button>
       <Heading as="h3" size="md" mt={4}>
         Tasks
       </Heading>
@@ -150,9 +196,32 @@ const ProjectPage: React.FC = () => {
           </ListItem>
         ))}
       </UnorderedList>
-      <Button mt={4} onClick={() => setIsEditing(true)}>
-        Edit Project
-      </Button>
+      <form onSubmit={handleAddTask}>
+        <VStack spacing={4} mt={4}>
+          <FormControl isRequired>
+            <FormLabel>Task Name</FormLabel>
+            <Input
+              value={taskName}
+              onChange={(e) => setTaskName(e.target.value)}
+              placeholder="Enter task name"
+            />
+          </FormControl>
+          <FormControl isRequired>
+            <FormLabel>Status</FormLabel>
+            <Select
+              value={taskStatus}
+              onChange={(e) => setTaskStatus(e.target.value)}
+            >
+              <option value="Not Started">Not Started</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Done">Done</option>
+            </Select>
+          </FormControl>
+          <Button type="submit" colorScheme="green">
+            Add Task
+          </Button>
+        </VStack>
+      </form>
     </Box>
   );
 };
