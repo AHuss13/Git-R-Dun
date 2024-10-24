@@ -36,10 +36,10 @@ pnpm install  `
 
 1. Sign up for an account or log in if you already have one.
 2. Create a new project by clicking the "New Project" button.
-3. Add tasks to your project, specifying details such as due dates, priority, and assignees.
-4. Use the drag-and-drop interface to organize tasks within your project.
-5. Mark tasks as complete as you progress through your project.
-6. Utilize the dashboard to get an overview of all your projects and upcoming tasks.
+3. Add tasks to your project by clicking the "Add Task" button.
+4. Utilize the dashboard to get an overview of all your projects and tasks.
+
+***Some features may come and go as I continue to learn and improve the application.***
 
 ## <span style="color:green">Credits</span>
 
