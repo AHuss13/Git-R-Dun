@@ -49,3 +49,7 @@ Node.js
 Express.js  
 MongoDB  
 MERN
+
+Contributors:
+Adam Huss
+Trey Shearin
