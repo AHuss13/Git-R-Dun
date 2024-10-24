@@ -74,3 +74,13 @@ export const QUERY_TASKS = gql`
     }
   }
 `;
+
+export const QUERY_TASK = gql`
+  query getTask($taskId: ID!) {
+    task(taskId: $taskId) {
+      _id
+      name
+      status
+    }
+  }
+`;
