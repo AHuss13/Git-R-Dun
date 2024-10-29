@@ -180,7 +180,7 @@ const ProjectPage: React.FC = () => {
   } = data.project;
 
   return (
-    <Box>
+    <Box p={6}>
       <Heading as="h2">{projectName}</Heading>
       <Text>{projectDescription}</Text>
       <Button mt={4} onClick={() => setIsEditing(true)}>
