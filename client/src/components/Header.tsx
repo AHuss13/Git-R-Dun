@@ -29,7 +29,7 @@ export const Header = () => (
         )}
 
         {Auth.loggedIn() && (
-          <Button colorScheme="purple" m="5px" ml="10px">
+          <Button colorScheme="purple" m="5px" mx="15px">
             <Link to={"/userpage"}>Userpage</Link>
           </Button>
         )}
@@ -44,8 +44,7 @@ export const Header = () => (
       {Auth.loggedIn() && (
         <Button
           colorScheme="red"
-          m="5px"
-          mr="10px"
+          m="15px"
           onClick={() => Auth.logout()}
         >
           Logout
