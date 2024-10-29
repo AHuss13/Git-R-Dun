@@ -34,7 +34,13 @@ pnpm install  `
 
 ## <span style="color:green">Usage</span>
 
-1. Sign up for an account or log in if you already have one.
+1. Sign up for an account or log in if you already have one. **Note: You can use the test account below to login.**
+
+   ```
+   email: test@test.com
+   password: Testing123
+   ```
+
 2. Create a new project by clicking the "New Project" button.
 3. Add tasks to your project by clicking the "Add Task" button.
 4. Utilize the dashboard to get an overview of all your projects and tasks.
@@ -57,6 +63,8 @@ Third-party assets:
 - [Apollo Client](https://www.apollographql.com/docs/react/)
 - [Chakra UI](https://chakra-ui.com/)
 - [TypeScript](https://www.typescriptlang.org/)
+- [Mongoose](https://mongoosejs.com/)
+- [JSON Web Token](https://jwt.io/)
 
 ## <span style="color:green">Features</span>
 
