@@ -261,19 +261,37 @@ const resolvers = {
       context: any
     ) => {
       if (context.user) {
-        const project = await Project.findOneAndDelete({
-          _id: projectId,
-        });
-        if (!project) {
-          throw new AuthenticationError("Failed to remove project!");
+        try {
+          // Find the project
+          const project = await Project.findOne({
+            _id: projectId,
+            owner: context.user._id,
+          });
+
+          if (!project) {
+            throw new AuthenticationError(
+              "Project not found or you don't have permission!"
+            );
+          }
+
+          // Delete all tasks associated with this project
+          await Task.deleteMany({ project: projectId });
+
+          // Delete the project
+          await Project.findByIdAndDelete(projectId);
+
+          // Remove project reference from user
+          await User.findByIdAndUpdate(context.user._id, {
+            $pull: { projects: projectId },
+          });
+
+          return project;
+        } catch (error) {
+          console.error("Error removing project:", error);
+          throw new Error("Failed to remove project and its tasks!");
         }
-        await User.findByIdAndUpdate(
-          { _id: context.user._id },
-          { $pull: { projects: project._id } }
-        );
-        return project;
       }
-      throw new AuthenticationError("Failed to remove project!");
+      throw new AuthenticationError("You need to be logged in!");
     },
 
     removeTask: async (

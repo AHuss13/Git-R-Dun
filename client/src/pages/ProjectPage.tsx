@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  Box,
   Heading,
   Text,
   UnorderedList,
@@ -13,11 +12,24 @@ import {
   Input,
   Textarea,
   Select,
+  Container,
+  Card,
+  CardBody,
+  HStack,
+  Box,
+  IconButton,
 } from "@chakra-ui/react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
-import { QUERY_PROJECT } from "../utils/queries";
-import { ADD_PROJECT, UPDATE_PROJECT, ADD_TASK } from "../utils/mutations";
+import { QUERY_PROJECT, QUERY_ME_PROJECTS } from "../utils/queries";
+import {
+  ADD_PROJECT,
+  UPDATE_PROJECT,
+  ADD_TASK,
+  REMOVE_PROJECT,
+  REMOVE_TASK,
+} from "../utils/mutations";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 interface Task {
   _id: string;
@@ -74,6 +86,16 @@ const ProjectPage: React.FC = () => {
       }
     },
   });
+
+  const [removeProject] = useMutation(REMOVE_PROJECT, {
+    onCompleted: () => {
+      navigate("/userpage");
+    },
+    refetchQueries: [{ query: QUERY_ME_PROJECTS }],
+    awaitRefetchQueries: true,
+  });
+
+  const [removeTask] = useMutation(REMOVE_TASK);
 
   useEffect(() => {
     if (data?.project && id) {
@@ -132,6 +154,32 @@ const ProjectPage: React.FC = () => {
     }
   };
 
+  const handleDeleteProject = async () => {
+    if (
+      !id ||
+      !window.confirm("Are you sure you want to delete this project?")
+    ) {
+      return;
+    }
+
+    try {
+      await removeProject({
+        variables: { projectId: id },
+      });
+    } catch (err) {
+      console.error("Error deleting project:", err);
+      alert("Failed to delete project");
+    }
+  };
+
+  const handleDeleteTask = async (taskId: string) => {
+    try {
+      await removeTask({ variables: { taskId } });
+    } catch (err) {
+      console.error("Error deleting task:", err);
+    }
+  };
+
   if (loading) return <Spinner />;
   if (error) return <Text color="red.500">Error: {error.message}</Text>;
 
@@ -180,49 +228,70 @@ const ProjectPage: React.FC = () => {
   } = data.project;
 
   return (
-    <Box p={6}>
-      <Heading as="h2">{projectName}</Heading>
-      <Text>{projectDescription}</Text>
-      <Button mt={4} onClick={() => setIsEditing(true)}>
-        Edit Project
-      </Button>
-      <Heading as="h3" size="md" mt={4}>
-        Tasks
-      </Heading>
-      <UnorderedList>
-        {tasks.map((task) => (
-          <ListItem key={task._id}>
-            {task.name} - {task.status}
-          </ListItem>
-        ))}
-      </UnorderedList>
-      <form onSubmit={handleAddTask}>
-        <VStack spacing={4} mt={4}>
-          <FormControl isRequired>
-            <FormLabel>Task Name</FormLabel>
-            <Input
-              value={taskName}
-              onChange={(e) => setTaskName(e.target.value)}
-              placeholder="Enter task name"
-            />
-          </FormControl>
-          <FormControl isRequired>
-            <FormLabel>Status</FormLabel>
-            <Select
-              value={taskStatus}
-              onChange={(e) => setTaskStatus(e.target.value)}
-            >
-              <option value="Not Started">Not Started</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Done">Done</option>
-            </Select>
-          </FormControl>
-          <Button type="submit" colorScheme="green">
-            Add Task
-          </Button>
-        </VStack>
-      </form>
-    </Box>
+    <Container maxW="container.lg">
+      <VStack spacing={4} align="stretch">
+        <Card>
+          <CardBody>
+            <Box mb={4}>
+              <HStack justify="space-between" align="center">
+                <Heading size="lg">{projectName}</Heading>
+                <IconButton
+                  aria-label="Delete project"
+                  icon={<DeleteIcon />}
+                  colorScheme="red"
+                  onClick={handleDeleteProject}
+                />
+              </HStack>
+              <Text mt={2}>{projectDescription}</Text>
+            </Box>
+          </CardBody>
+        </Card>
+        <Heading as="h3" size="md" mt={4}>
+          Tasks
+        </Heading>
+        <UnorderedList>
+          {tasks.map((task) => (
+            <ListItem fontSize="lg" key={task._id}>
+              {task.name} - {task.status}
+              <IconButton
+                aria-label="Delete task"
+                icon={<DeleteIcon />}
+                colorScheme="red"
+                size="xs"
+                ml={2}
+                onClick={() => handleDeleteTask(task._id)}
+              />
+            </ListItem>
+          ))}
+        </UnorderedList>
+        <form onSubmit={handleAddTask}>
+          <VStack spacing={4} mt={4}>
+            <FormControl isRequired>
+              <FormLabel>Task Name</FormLabel>
+              <Input
+                value={taskName}
+                onChange={(e) => setTaskName(e.target.value)}
+                placeholder="Enter task name"
+              />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Status</FormLabel>
+              <Select
+                value={taskStatus}
+                onChange={(e) => setTaskStatus(e.target.value)}
+              >
+                <option value="Not Started">Not Started</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Done">Done</option>
+              </Select>
+            </FormControl>
+            <Button type="submit" colorScheme="green">
+              Add Task
+            </Button>
+          </VStack>
+        </form>
+      </VStack>
+    </Container>
   );
 };
 
