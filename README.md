@@ -37,7 +37,7 @@ pnpm install  `
 1. Sign up for an account or log in if you already have one. **Note: You can use the test account below to login.**
 
    ```
-   email: test@test.com
+   email: test1@test.com
    password: Testing123
    ```
 
