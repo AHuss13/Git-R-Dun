@@ -339,6 +339,42 @@ const resolvers = {
       }
       throw new AuthenticationError("Failed to update project!");
     },
+
+    updateTask: async (
+      _parent: any,
+      {
+        taskId,
+        input,
+      }: { taskId: string; input: { name: string; status: string } },
+      context: any
+    ) => {
+      if (context.user) {
+        // Find the task and verify ownership through project
+        const task = await Task.findById(taskId).populate("project");
+        if (!task) {
+          throw new Error("Task not found");
+        }
+
+        const project = await Project.findOne({
+          _id: task.project,
+          owner: context.user._id,
+        });
+
+        if (!project) {
+          throw new AuthenticationError(
+            "You don't have permission to update this task!"
+          );
+        }
+
+        // Update the task
+        const updatedTask = await Task.findByIdAndUpdate(taskId, input, {
+          new: true,
+        });
+
+        return updatedTask;
+      }
+      throw new AuthenticationError("You need to be logged in!");
+    },
   },
 };
 

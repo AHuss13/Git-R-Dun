@@ -67,6 +67,7 @@ const typeDefs = gql`
     removeUser(username: String!): User
     removeProject(projectId: ID!): Project
     removeTask(taskId: ID!): Task
+    updateTask(taskId: ID!, input: TaskInput!): Task
   }
 `;
 
