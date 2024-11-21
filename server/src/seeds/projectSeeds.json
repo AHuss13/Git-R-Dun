@@ -1,9 +1,10 @@
-{
-  "name": "Project 1",
-  "description": "This is project 1",
-  "tasks": [
-    {
-      "$oid": "67180ccce82cfc0f72299e6a"
-    }
-  ]
-}
+[
+  {
+    "name": "Welcome Project",
+    "description": "This is your first project! Feel free to modify or delete it."
+  },
+  {
+    "name": "Sample Project",
+    "description": "Here's another project to help you get started."
+  }
+]

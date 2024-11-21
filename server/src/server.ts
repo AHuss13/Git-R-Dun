@@ -12,7 +12,7 @@ import { authenticateToken } from "./utils/auth.js";
 import db from "./config/connection.js";
 
 import { fileURLToPath } from "url";
-import { dirname } from 'path';
+import { dirname } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

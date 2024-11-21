@@ -3,6 +3,7 @@ import { Schema, model, Document } from "mongoose";
 interface ITask extends Document {
   name: string;
   status: string;
+  project: Schema.Types.ObjectId;
 }
 
 const taskSchema = new Schema<ITask>({
@@ -14,6 +15,11 @@ const taskSchema = new Schema<ITask>({
     type: String,
     enum: ["Not Started", "In Progress", "Done"],
     default: "Not Started",
+    required: true,
+  },
+  project: {
+    type: Schema.Types.ObjectId,
+    ref: "Project",
     required: true,
   },
 });

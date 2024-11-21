@@ -16,17 +16,17 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import Auth from "../utils/auth";
-import { QUERY_PROJECTS } from "../utils/queries";
+import { QUERY_ME_PROJECTS } from "../utils/queries";
 import { ADD_PROJECT } from "../utils/mutations";
 import ProjectList from "../components/projectList";
 
 const Userpage = () => {
   const {
     loading: projectsLoading,
-    data: projectsData,
+    data: userData,
     error: projectsError,
-  } = useQuery(QUERY_PROJECTS);
-  const projects = projectsData?.projects || [];
+  } = useQuery(QUERY_ME_PROJECTS);
+  const projects = userData?.me?.projects || [];
 
   const [formState, setFormState] = useState({
     name: "",
@@ -34,7 +34,7 @@ const Userpage = () => {
   });
 
   const [addProject, { error: addProjectError }] = useMutation(ADD_PROJECT, {
-    refetchQueries: [{ query: QUERY_PROJECTS }],
+    refetchQueries: [{ query: QUERY_ME_PROJECTS }],
   });
 
   const handleChange = (

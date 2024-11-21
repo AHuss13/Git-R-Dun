@@ -84,3 +84,22 @@ export const QUERY_TASK = gql`
     }
   }
 `;
+
+export const QUERY_ME_PROJECTS = gql`
+  query me {
+    me {
+      _id
+      username
+      projects {
+        _id
+        name
+        description
+        tasks {
+          _id
+          name
+          status
+        }
+      }
+    }
+  }
+`;
