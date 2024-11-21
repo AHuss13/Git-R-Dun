@@ -19,6 +19,7 @@ import {
   Box,
   IconButton,
 } from "@chakra-ui/react";
+
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import { QUERY_PROJECT, QUERY_ME_PROJECTS } from "../utils/queries";
@@ -28,8 +29,9 @@ import {
   ADD_TASK,
   REMOVE_PROJECT,
   REMOVE_TASK,
+  UPDATE_TASK,
 } from "../utils/mutations";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 
 interface Task {
   _id: string;
@@ -48,10 +50,13 @@ const ProjectPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditingTask, setIsEditingTask] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [taskName, setTaskName] = useState("");
   const [taskStatus, setTaskStatus] = useState("Not Started");
+  const [editingTaskName, setEditingTaskName] = useState("");
+  const [editingTaskStatus, setEditingTaskStatus] = useState("");
   const { loading, error, data } = useQuery<{ project: Project }>(
     QUERY_PROJECT,
     {
@@ -95,7 +100,14 @@ const ProjectPage: React.FC = () => {
     awaitRefetchQueries: true,
   });
 
-  const [removeTask] = useMutation(REMOVE_TASK);
+  const [removeTask] = useMutation(REMOVE_TASK, {
+    // refresh the project page
+    refetchQueries: [{ query: QUERY_PROJECT, variables: { projectId: id } }],
+  });
+
+  const [updateTask] = useMutation(UPDATE_TASK, {
+    refetchQueries: [{ query: QUERY_PROJECT, variables: { projectId: id } }],
+  });
 
   useEffect(() => {
     if (data?.project && id) {
@@ -180,6 +192,29 @@ const ProjectPage: React.FC = () => {
     }
   };
 
+  const handleEditTask = (task: Task) => {
+    setIsEditingTask(task._id);
+    setEditingTaskName(task.name);
+    setEditingTaskStatus(task.status);
+  };
+
+  const handleUpdateTask = async (taskId: string) => {
+    try {
+      await updateTask({
+        variables: {
+          taskId,
+          input: {
+            name: editingTaskName,
+            status: editingTaskStatus,
+          },
+        },
+      });
+      setIsEditingTask(null);
+    } catch (err) {
+      console.error("Error updating task:", err);
+    }
+  };
+
   if (loading) return <Spinner />;
   if (error) return <Text color="red.500">Error: {error.message}</Text>;
 
@@ -235,12 +270,20 @@ const ProjectPage: React.FC = () => {
             <Box mb={4}>
               <HStack justify="space-between" align="center">
                 <Heading size="lg">{projectName}</Heading>
-                <IconButton
-                  aria-label="Delete project"
-                  icon={<DeleteIcon />}
-                  colorScheme="red"
-                  onClick={handleDeleteProject}
-                />
+                <HStack>
+                  <IconButton
+                    aria-label="Edit project"
+                    icon={<EditIcon />}
+                    colorScheme="blue"
+                    onClick={() => setIsEditing(true)}
+                  />
+                  <IconButton
+                    aria-label="Delete project"
+                    icon={<DeleteIcon />}
+                    colorScheme="red"
+                    onClick={handleDeleteProject}
+                  />
+                </HStack>
               </HStack>
               <Text mt={2}>{projectDescription}</Text>
             </Box>
@@ -252,15 +295,91 @@ const ProjectPage: React.FC = () => {
         <UnorderedList>
           {tasks.map((task) => (
             <ListItem fontSize="lg" key={task._id}>
-              {task.name} - {task.status}
-              <IconButton
-                aria-label="Delete task"
-                icon={<DeleteIcon />}
-                colorScheme="red"
-                size="xs"
-                ml={2}
-                onClick={() => handleDeleteTask(task._id)}
-              />
+              {isEditingTask === task._id ? (
+                <HStack spacing={2}>
+                  <Input
+                    value={editingTaskName}
+                    onChange={(e) => setEditingTaskName(e.target.value)}
+                    size="sm"
+                  />
+                  <Select
+                    value={editingTaskStatus}
+                    onChange={(e) => setEditingTaskStatus(e.target.value)}
+                    size="sm"
+                    width="auto"
+                  >
+                    <option value="Not Started">Not Started</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Done">Done</option>
+                  </Select>
+                  <Button
+                    size="sm"
+                    colorScheme="green"
+                    onClick={() => handleUpdateTask(task._id)}
+                  >
+                    Save
+                  </Button>
+                  <Button size="sm" onClick={() => setIsEditingTask(null)}>
+                    Cancel
+                  </Button>
+                </HStack>
+              ) : (
+                <HStack justify="space-between">
+                  <HStack spacing={2} align="center">
+                    <Text
+                      fontSize={{
+                        base: "14px",
+                        sm: "16px",
+                        md: "20px",
+                        lg: "22px",
+                      }}
+                    >
+                      {task.name}
+                    </Text>
+                    <Text
+                      fontSize={{
+                        base: "14px",
+                        sm: "16px",
+                        md: "20px",
+                        lg: "22px",
+                      }}
+                    >
+                      - {task.status}
+                      <Box
+                        w={{ base: "9px", md: "12px", lg: "14px" }}
+                        h={{ base: "9px", md: "12px", lg: "14px" }}
+                        mx={2}
+                        borderRadius="full"
+                        display="inline-flex"
+                        alignSelf="center"
+                        bg={
+                          task.status === "Done"
+                            ? "green.400"
+                            : task.status === "In Progress"
+                            ? "yellow.400"
+                            : "red.300"
+                        }
+                      />
+                    </Text>
+                  </HStack>
+                  <HStack>
+                    <IconButton
+                      aria-label="Edit task"
+                      icon={<EditIcon />}
+                      colorScheme="blue"
+                      size="xs"
+                      onClick={() => handleEditTask(task)}
+                    />
+                    <IconButton
+                      aria-label="Delete task"
+                      icon={<DeleteIcon />}
+                      colorScheme="red"
+                      size="xs"
+                      onClick={() => handleDeleteTask(task._id)}
+                    />
+                  </HStack>
+                </HStack>
+              )}
             </ListItem>
           ))}
         </UnorderedList>
