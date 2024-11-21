@@ -1,5 +1,3 @@
-// GOLD!
-
 import { Project, Task, User } from "../models/index.js";
 
 const cleanDB = async (): Promise<void> => {
@@ -13,7 +11,7 @@ const cleanDB = async (): Promise<void> => {
     );
 
     await User.deleteMany({});
-    console.log("Users were wiped out by dysentary!");
+    console.log("All Users were wiped out by dysentary!");
   } catch (err) {
     console.error("Error cleaning your trophy collections:", err);
     process.exit(1);

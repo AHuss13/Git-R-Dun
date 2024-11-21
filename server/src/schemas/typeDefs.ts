@@ -16,12 +16,14 @@ const typeDefs = gql`
     name: String
     description: String
     tasks: [Task]!
+    owner: ID!
   }
 
   type Task {
     _id: ID
     name: String
     status: String
+    project: ID!
   }
 
   input UserInput {
@@ -52,6 +54,7 @@ const typeDefs = gql`
     projects: [Project]!
     project(projectId: ID!): Project
     tasks: [Task]
+    myTasks: [Task]
     task(taskId: ID!): Task
   }
 

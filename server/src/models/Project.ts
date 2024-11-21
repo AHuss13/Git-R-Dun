@@ -7,6 +7,7 @@ interface IProject extends Document {
   name: string;
   description: string;
   tasks: ITask[];
+  owner: Schema.Types.ObjectId;
 }
 
 const projectSchema = new Schema<IProject>({
@@ -25,6 +26,11 @@ const projectSchema = new Schema<IProject>({
     maxlength: 280,
   },
   tasks: [{ type: Schema.Types.ObjectId, ref: "Task" }],
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 });
 
 const Project = model<IProject>("Project", projectSchema);

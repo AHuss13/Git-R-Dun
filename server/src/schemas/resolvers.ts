@@ -63,7 +63,13 @@ interface RemoveTaskArgs {
 const resolvers = {
   Query: {
     users: async () => {
-      return User.find().populate("projects");
+      return User.find().populate({
+        path: "projects",
+        populate: {
+          path: "tasks",
+          model: "Task",
+        },
+      });
     },
     user: async (_parent: any, { username }: UserArgs) => {
       try {
@@ -76,7 +82,10 @@ const resolvers = {
 
     projects: async () => {
       try {
-        const projects = await Project.find();
+        const projects = await Project.find().populate({
+          path: "tasks",
+          model: "Task",
+        });
         return projects;
       } catch (error) {
         throw new Error("Failed to fetch projects");
@@ -85,7 +94,10 @@ const resolvers = {
 
     project: async (_parent: any, { projectId }: ProjectArgs) => {
       try {
-        const project = await Project.findById(projectId).populate("tasks");
+        const project = await Project.findById(projectId).populate({
+          path: "tasks",
+          model: "Task",
+        });
         return project;
       } catch (error) {
         throw new Error("Failed to fetch project");
@@ -94,7 +106,13 @@ const resolvers = {
 
     me: async (_parent: any, _args: any, context: any) => {
       if (context.user) {
-        return User.findOne({ _id: context.user._id }).populate("projects");
+        return User.findOne({ _id: context.user._id }).populate({
+          path: "projects",
+          populate: {
+            path: "tasks",
+            model: "Task",
+          },
+        });
       }
       throw new AuthenticationError("You need to be logged in!");
     },
@@ -106,6 +124,21 @@ const resolvers = {
       } catch (error) {
         throw new Error("Failed to fetch tasks");
       }
+    },
+
+    myTasks: async (_parent: any, _args: any, context: any) => {
+      if (!context.user) {
+        throw new AuthenticationError("You need to be logged in!");
+      }
+
+      const userProjects = await Project.find({ owner: context.user._id });
+      if (!userProjects || userProjects.length === 0) {
+        return []; // Return empty array if user has no projects
+      }
+
+      const projectIds = userProjects.map((project) => project._id);
+      const tasks = await Task.find({ project: { $in: projectIds } });
+      return tasks;
     },
 
     task: async (_parent: any, { taskId }: TaskArgs) => {
@@ -131,7 +164,8 @@ const resolvers = {
 
     login: async (_parent: unknown, { email, password }: LoginUserArgs) => {
       try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email: email.toLowerCase() });
+
         if (!user) {
           throw new AuthenticationError(
             "No user found with this email address"
@@ -164,13 +198,22 @@ const resolvers = {
       context: any
     ) => {
       if (context.user) {
-        const project = await Project.create({ ...input });
+        try {
+          const project = await Project.create({
+            ...input,
+            owner: context.user._id,
+          });
 
-        await User.findByIdAndUpdate(
-          { _id: context.user._id },
-          { $addToSet: { projects: project._id } }
-        );
-        return project;
+          await User.findByIdAndUpdate(
+            context.user._id,
+            { $push: { projects: project._id } },
+            { new: true }
+          );
+
+          return project;
+        } catch (error) {
+          throw new Error("Failed to create project");
+        }
       }
       throw new AuthenticationError("You need to be logged in!");
     },
@@ -181,15 +224,35 @@ const resolvers = {
       context: any
     ) => {
       if (context.user) {
-        const task = await Task.create(input);
-        await Project.findByIdAndUpdate(
-          projectId,
-          { $push: { tasks: task._id } },
-          { new: true }
-        );
-        return task;
+        const project = await Project.findOne({
+          _id: projectId,
+          owner: context.user._id,
+        });
+
+        if (!project) {
+          throw new AuthenticationError(
+            "Project not found or you don't have permission!"
+          );
+        }
+
+        try {
+          const task = await Task.create({
+            ...input,
+            project: projectId,
+          });
+
+          await Project.findByIdAndUpdate(
+            projectId,
+            { $push: { tasks: task._id } },
+            { new: true }
+          );
+
+          return task;
+        } catch (error) {
+          throw new Error("Failed to create task");
+        }
       }
-      throw new AuthenticationError("Failed to add task!");
+      throw new AuthenticationError("You need to be logged in!");
     },
 
     removeProject: async (
@@ -219,14 +282,30 @@ const resolvers = {
       context: any
     ) => {
       if (context.user) {
-        const task = await Task.findOneAndDelete({ _id: taskId });
-
+        const task = await Task.findById(taskId).populate("project");
         if (!task) {
-          throw new AuthenticationError("Failed to remove task!");
+          throw new Error("Task not found");
         }
+
+        const project = await Project.findOne({
+          _id: task.project,
+          owner: context.user._id,
+        });
+
+        if (!project) {
+          throw new AuthenticationError(
+            "You don't have permission to remove this task!"
+          );
+        }
+
+        await Task.findByIdAndDelete(taskId);
+        await Project.findByIdAndUpdate(task.project, {
+          $pull: { tasks: taskId },
+        });
+
         return task;
       }
-      throw new AuthenticationError("Failed to remove task!");
+      throw new AuthenticationError("You need to be logged in!");
     },
 
     updateProject: async (

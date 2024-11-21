@@ -7,34 +7,38 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
+    "dev": "concurrently \"tsc -w\" \"nodemon dist/server.js\"",
     "seed": "node dist/seeds/seed.js",
-    "dev": "nodemon dist/server.js",
     "watch": "tsc -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.4.5",
-    "@apollo/server": "^4.10.4",
-    "apollo-server-express": "^3.6.0",
-    "bcrypt": "^5.0.0",
-    "express": "^4.19.2",
+    "@apollo/server": "^4.11.2",
+    "apollo-server-express": "^3.13.0",
+    "bcrypt": "^5.1.1",
+    "express": "^4.21.1",
     "graphql": "^16.9.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.3",
-    "typescript": "^5.4.5",
+    "typescript": "^5.6.3",
     "@types/bcrypt": "^5.0.2",
-    "@types/express": "^4.17.21",
-    "@types/jsonwebtoken": "^9.0.6",
-    "nodemon": "^3.1.0"
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
+    "nodemon": "^3.1.7"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
-    "@types/express": "^4.17.21",
-    "@types/jsonwebtoken": "^9.0.6",
-    "nodemon": "^3.1.0",
-    "typescript": "^5.4.5"
+    "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
+    "nodemon": "^3.1.7",
+    "typescript": "^5.4.5",
+    "@typescript-eslint/eslint-plugin": "^8.15.0",
+    "@typescript-eslint/parser": "^8.15.0",
+    "eslint": "^9.15.0"
   }
 }
