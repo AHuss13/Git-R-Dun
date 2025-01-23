@@ -337,7 +337,7 @@ template {
   display: none;
 }
 
-/* 
+/*
 =================
 END NORMALIZE CSS
 =================
@@ -1705,4 +1705,8 @@ label form [type="radio"] {
   .align-content-center-xl {
     align-content: center;
   }
+}
+
+.login-info {
+  padding-left: 1em;
 }

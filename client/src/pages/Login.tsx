@@ -46,6 +46,12 @@ const Login = () => {
       <main className="flex-row justify-center mb-4">
         <div className="col-12 col-lg-10">
           <div className="card">
+            Use the following credentials to login: <br />
+            <div className="login-info">
+            email: test@test.com <br />
+            password: Testing123 <br />
+            <br />
+            </div>
             <h4 className="card-header bg-dark text-light p-2">Login</h4>
             <div className="card-body">
               {data ? (
